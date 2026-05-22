@@ -178,6 +178,9 @@ function ListingCard({car, locale}: {car: CarWithBrand; locale: Locale}) {
       <div className="p-4">
         <div className="mb-3 flex flex-wrap gap-2">
           <Badge>{localize(car.brand.name, locale)}</Badge>
+          <Badge className={car.sourceConfidence === "official" ? "border-green-200 bg-green-50 text-green-800" : "border-amber-200 bg-amber-50 text-amber-900"}>
+            {car.sourceConfidence === "official" ? "Official" : "Verify"}
+          </Badge>
           <Badge className={car.status === "on-sale" ? "border-green-200 bg-green-50 text-green-800" : ""}>
             {car.status === "on-sale" ? common("onSale") : common("discontinued")}
           </Badge>

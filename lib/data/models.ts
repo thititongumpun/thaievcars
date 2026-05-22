@@ -1,5 +1,9 @@
 import {brands, faqItems, models} from "./seed";
 import type {CarWithBrand} from "@/lib/types/ev";
+import {fetchSanity} from "@/lib/sanity/fetch";
+import {carBySlugQuery, carsQuery, faqItemsQuery} from "@/lib/sanity/queries";
+import {normalizeCar, normalizeFAQItem} from "@/lib/sanity/normalize";
+import type {FAQItem} from "@/lib/types/ev";
 
 function withBrand(modelId: string): CarWithBrand | undefined {
   const model = models.find((item) => item.id === modelId || item.slug === modelId);
@@ -12,12 +16,22 @@ function withBrand(modelId: string): CarWithBrand | undefined {
 }
 
 export async function getModels(): Promise<CarWithBrand[]> {
+  const sanityModels = await fetchSanity<CarWithBrand[]>(carsQuery, {}, ["sanity", "cars", "brands"]);
+  if (sanityModels?.length) {
+    return sanityModels.map(normalizeCar);
+  }
+
   return models
     .map((model) => withBrand(model.id))
     .filter((model): model is CarWithBrand => Boolean(model));
 }
 
 export async function getModelBySlug(slug: string): Promise<CarWithBrand | undefined> {
+  const sanityModel = await fetchSanity<CarWithBrand | null>(carBySlugQuery, {slug}, ["sanity", "cars", `car:${slug}`]);
+  if (sanityModel) {
+    return normalizeCar(sanityModel);
+  }
+
   return withBrand(slug);
 }
 
@@ -35,5 +49,10 @@ export async function getRelatedModels(modelId: string): Promise<CarWithBrand[]>
 }
 
 export async function getFAQItemsForModel(modelId: string) {
+  const sanityItems = await fetchSanity<FAQItem[]>(faqItemsQuery, {}, ["sanity", "faq", "cars"]);
+  if (sanityItems?.length) {
+    return sanityItems.map(normalizeFAQItem).filter((item) => item.relatedCarId === modelId);
+  }
+
   return faqItems.filter((item) => item.relatedCarId === modelId);
 }

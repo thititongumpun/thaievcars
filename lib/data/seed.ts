@@ -513,6 +513,21 @@ export const models: CarModel[] = [
   }
 ];
 
+const sampleSpinImages = [
+  "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=1400&q=80",
+  "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=1400&q=80",
+  "https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1400&q=80",
+  "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1400&q=80",
+  "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=1400&q=80",
+  "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=1400&q=80",
+  "https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1400&q=80",
+  "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1400&q=80"
+];
+
+models.forEach((model) => {
+  model.spinImages = model.id === "byd-dolphin-standard" ? sampleSpinImages : [];
+});
+
 export const faqCategories: FAQCategory[] = [
   {id: "buying", name: {th: "การซื้อรถ", en: "Buying"}, slug: "buying", order: 1},
   {id: "charging", name: {th: "การชาร์จ", en: "Charging"}, slug: "charging", order: 2},

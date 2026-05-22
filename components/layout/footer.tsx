@@ -13,6 +13,9 @@ export function Footer() {
           <Link href="/references" className="font-semibold text-green-700 hover:text-green-800">
             References
           </Link>
+          <Link href="/data-quality" className="font-semibold text-green-700 hover:text-green-800">
+            Data quality
+          </Link>
         </div>
       </div>
     </footer>

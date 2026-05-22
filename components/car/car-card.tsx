@@ -6,6 +6,7 @@ import {Link} from "@/i18n/navigation";
 import {formatThb, getCurrentPricing, localize} from "@/lib/format";
 import type {CarWithBrand} from "@/lib/types/ev";
 import {Badge} from "@/components/ui/badge";
+import {TrustBadge} from "./trust-badge";
 
 export async function CarCard({car, locale}: {car: CarWithBrand; locale: Locale}) {
   const t = await getTranslations("common");
@@ -19,6 +20,7 @@ export async function CarCard({car, locale}: {car: CarWithBrand; locale: Locale}
       <div className="p-5">
         <div className="mb-3 flex flex-wrap gap-2">
           <Badge>{localize(car.brand.name, locale)}</Badge>
+          <TrustBadge confidence={car.sourceConfidence} />
           {car.isNewArrival ? <Badge className="border-green-200 bg-green-50 text-green-800">{t("newArrival")}</Badge> : null}
         </div>
         <h3 className="text-lg font-semibold group-hover:text-green-700">{localize(car.name, locale)}</h3>

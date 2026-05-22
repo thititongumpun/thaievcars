@@ -73,6 +73,7 @@ export type CarModel = {
   brandId: string;
   year: number;
   images: string[];
+  spinImages?: string[];
   shortDescription: LocalizedString;
   status: CarStatus;
   isNewArrival: boolean;

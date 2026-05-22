@@ -8,6 +8,10 @@ export default withNextIntl({
       {
         protocol: "https",
         hostname: "images.unsplash.com"
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io"
       }
     ]
   }

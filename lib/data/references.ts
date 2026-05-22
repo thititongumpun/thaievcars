@@ -101,5 +101,14 @@ export const referenceSources: ReferenceSource[] = [
 ];
 
 export async function getReferenceSources() {
+  const {fetchSanity} = await import("@/lib/sanity/fetch");
+  const {referenceSourcesQuery} = await import("@/lib/sanity/queries");
+  const {normalizeReferenceSource} = await import("@/lib/sanity/normalize");
+  const sanitySources = await fetchSanity<ReferenceSource[]>(referenceSourcesQuery, {}, ["sanity", "references"]);
+
+  if (sanitySources?.length) {
+    return sanitySources.map(normalizeReferenceSource);
+  }
+
   return referenceSources;
 }

@@ -6,6 +6,8 @@ import type {Locale} from "@/i18n/routing";
 import {Badge} from "@/components/ui/badge";
 import {CarCard} from "@/components/car/car-card";
 import {CarTabs} from "@/components/car/car-tabs";
+import {TrustBadge} from "@/components/car/trust-badge";
+import {Car360Viewer} from "@/components/car/car-360-viewer";
 import {formatThb, getCurrentPricing, getPreviousPricing, localize} from "@/lib/format";
 import {getFAQItemsForModel, getModelBySlug, getModels, getRelatedModels} from "@/lib/data/models";
 
@@ -45,6 +47,7 @@ export default async function CarDetailPage({params}: {params: Promise<{locale: 
         <div className="flex flex-col justify-center">
           <div className="mb-3 flex flex-wrap gap-2">
             <Badge>{localize(car.brand.name, locale)}</Badge>
+            <TrustBadge confidence={car.sourceConfidence} />
             <Badge>{car.year}</Badge>
             <Badge className={car.status === "on-sale" ? "border-green-200 bg-green-50 text-green-800" : ""}>
               {car.status === "on-sale" ? t("onSale") : t("discontinued")}
@@ -65,7 +68,33 @@ export default async function CarDetailPage({params}: {params: Promise<{locale: 
         </div>
       </div>
 
+      {car.spinImages?.length ? <Car360Viewer images={car.spinImages} alt={localize(car.name, locale)} /> : null}
+
       <CarTabs car={car} locale={locale} faqItems={faqItems} />
+
+      <section className="mt-8 grid gap-4 md:grid-cols-2">
+        <div className="rounded-lg border border-border bg-white p-5">
+          <h2 className="text-lg font-bold">Warranty</h2>
+          <dl className="mt-3 grid gap-3 text-sm">
+            <div className="flex justify-between gap-4 border-b border-border pb-3">
+              <dt className="text-muted-foreground">Vehicle</dt>
+              <dd className="font-semibold">{car.warranty.vehicleYears} years / {car.warranty.vehicleKm.toLocaleString()} km</dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-muted-foreground">Battery</dt>
+              <dd className="font-semibold">{car.warranty.batteryYears} years / {car.warranty.batteryKm.toLocaleString()} km</dd>
+            </div>
+          </dl>
+        </div>
+        <div className="rounded-lg border border-border bg-white p-5">
+          <h2 className="text-lg font-bold">Data status</h2>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <TrustBadge confidence={car.sourceConfidence} />
+            <Badge>{car.bodyType}</Badge>
+          </div>
+          <p className="mt-3 text-sm text-muted-foreground">Updated by: {car.lastUpdatedBy}</p>
+        </div>
+      </section>
 
       <section className="mt-8 rounded-lg border border-amber-200 bg-amber-50 p-5">
         <h2 className="text-lg font-bold">{carT("sources")}</h2>
