@@ -7,6 +7,7 @@ export type Brand = {
   name: LocalizedString;
   slug: string;
   logoText: string;
+  logoUrl?: string;
   country: LocalizedString;
   description: LocalizedString;
   websiteUrl: string;

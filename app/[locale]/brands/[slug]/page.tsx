@@ -1,4 +1,5 @@
 import {notFound} from "next/navigation";
+import Image from "next/image";
 import {setRequestLocale} from "next-intl/server";
 import type {Metadata} from "next";
 import type {Locale} from "@/i18n/routing";
@@ -51,7 +52,13 @@ export default async function BrandDetailPage({params}: {params: Promise<{locale
     <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-8 rounded-lg border border-border bg-white p-6">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
-          <div className="flex h-20 w-20 items-center justify-center rounded-md bg-slate-950 text-sm font-bold text-white">{brand.logoText}</div>
+          <div className="flex h-20 w-20 items-center justify-center rounded-md bg-slate-950 text-sm font-bold text-white">
+            {brand.logoUrl ? (
+              <Image src={brand.logoUrl} alt={`${localize(brand.name, locale)} logo`} width={80} height={80} className="h-20 w-20 rounded-md bg-white object-contain p-3" />
+            ) : (
+              brand.logoText
+            )}
+          </div>
           <div>
             <Badge>{localize(brand.country, locale)}</Badge>
             <h1 className="mt-3 text-3xl font-bold">{localize(brand.name, locale)}</h1>

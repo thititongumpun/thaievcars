@@ -5,6 +5,7 @@ export const sanityClient = createClient({
   projectId: sanityProjectId,
   dataset: sanityDataset,
   apiVersion: sanityApiVersion,
-  useCdn: true,
+  token: process.env.SANITY_API_TOKEN,
+  useCdn: !process.env.SANITY_API_TOKEN,
   perspective: "published"
 });

@@ -1,4 +1,5 @@
 import {BatteryCharging, CarFront, GitCompareArrows} from "lucide-react";
+import Image from "next/image";
 import {getTranslations, setRequestLocale} from "next-intl/server";
 import type {Metadata} from "next";
 import type {Locale} from "@/i18n/routing";
@@ -58,7 +59,11 @@ export default async function HomePage({params}: {params: Promise<{locale: Local
               <div className="grid grid-cols-3 gap-3">
                 {brands.slice(0, 3).map((brand) => (
                   <div key={brand.id} className="flex aspect-square items-center justify-center rounded-md bg-slate-950 text-sm font-bold text-white">
-                    {brand.logoText}
+                    {brand.logoUrl ? (
+                      <Image src={brand.logoUrl} alt={`${brand.name.en} logo`} width={96} height={96} className="h-full w-full rounded-md bg-white object-contain p-3" />
+                    ) : (
+                      brand.logoText
+                    )}
                   </div>
                 ))}
               </div>

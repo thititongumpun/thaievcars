@@ -3,6 +3,7 @@ export const brandProjection = `{
   name,
   "slug": slug.current,
   "logoText": coalesce(logoText, name.en),
+  "logoUrl": logo.asset->url,
   country,
   description,
   websiteUrl,
