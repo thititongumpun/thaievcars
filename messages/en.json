@@ -1,0 +1,139 @@
+{
+  "nav": {
+    "home": "Home",
+    "brands": "Brands",
+    "cars": "Cars",
+    "references": "References",
+    "compare": "Compare",
+    "faq": "FAQ"
+  },
+  "home": {
+    "headline": "Thai EV cars in one useful place",
+    "subhead": "Browse brands, models, specs, charging, pricing history, and owner-style FAQ before buying.",
+    "browseBrands": "Browse brands",
+    "compareCars": "Compare cars",
+    "featuredBrands": "Featured brands",
+    "latestModels": "New and notable models",
+    "trackedBrands": "Brands",
+    "trackedModels": "Models"
+  },
+  "common": {
+    "currentPrice": "Current price",
+    "discount": "Discount",
+    "models": "Models",
+    "onSale": "On sale",
+    "discontinued": "Discontinued",
+    "newArrival": "New arrival",
+    "from": "From",
+    "viewDetails": "View details",
+    "relatedCars": "Related cars from this brand"
+  },
+  "car": {
+    "specs": "Specs",
+    "charging": "Charging",
+    "pricing": "Pricing",
+    "faq": "FAQ",
+    "range": "Range",
+    "battery": "Battery",
+    "power": "Motor power",
+    "torque": "Torque",
+    "acceleration": "0-100 km/h",
+    "topSpeed": "Top speed",
+    "drivetrain": "Drivetrain",
+    "seats": "Seats",
+    "cargo": "Cargo",
+    "weight": "Weight",
+    "dimensions": "Dimensions",
+    "ipRating": "IP rating",
+    "acCharging": "AC charging",
+    "dcCharging": "DC charging",
+    "connector": "Connector",
+    "v2l": "V2L",
+    "homeCharger": "Home charger",
+    "wheels": "Wheels and tires",
+    "colors": "Exterior colors",
+    "sources": "Model sources",
+    "lastVerified": "Last verified",
+    "verifyBeforeBuying": "Verify price, specs, promotions, and warranty with these sources before buying.",
+    "suggestUpdate": "Suggest an update"
+  },
+  "trust": {
+    "official": "Official source",
+    "dealer": "Dealer source",
+    "community": "Community submitted",
+    "needs-verification": "Needs verification"
+  },
+  "compare": {
+    "title": "Compare EV models",
+    "subtitle": "Select up to 3 cars to compare specs and prices side by side.",
+    "addCar": "Add car",
+    "selected": "Selected cars",
+    "empty": "Select at least 2 models to start comparing"
+  },
+  "cars": {
+    "title": "Find EV cars in Thailand",
+    "subtitle": "Filter models by brand, price, range, drivetrain, and sale status.",
+    "search": "Search model or brand",
+    "brand": "Brand",
+    "allBrands": "All brands",
+    "budget": "Budget",
+    "allPrices": "All prices",
+    "under700k": "Under THB 700,000",
+    "under1m": "Under THB 1,000,000",
+    "over1m": "Over THB 1,000,000",
+    "range": "Range",
+    "anyRange": "Any range",
+    "range400": "400 km+",
+    "range450": "450 km+",
+    "drivetrain": "Drivetrain",
+    "anyDrivetrain": "Any drivetrain",
+    "status": "Status",
+    "anyStatus": "Any status",
+    "resultCount": "{count} models",
+    "reset": "Reset filters",
+    "empty": "No models match these filters yet"
+  },
+  "references": {
+    "title": "Reference sources",
+    "subtitle": "Official sites and useful sources to verify before buying. Model prices, promotions, and specs can change over time.",
+    "official": "Official sites",
+    "tools": "Tools and agencies",
+    "open": "Open site",
+    "checked": "Last checked",
+    "disclaimer": "ThaiEVCars Phase 1 uses sample data. Always verify price, specs, promotion terms, and warranty with official sites or authorized dealers before buying."
+  },
+  "contribute": {
+    "title": "Help update EV data",
+    "subtitle": "If you find a price, spec, promotion, or FAQ that should be corrected, send it with a source.",
+    "why": "What to send",
+    "source": "Good source material",
+    "send": "Send by email",
+    "items": {
+      "price": "New price, promotion, discount, and start/end dates",
+      "spec": "Changed specs such as battery, range, AC/DC charging, wheels, or colors",
+      "owner": "Owner experience such as real use, charging, issues, or buying advice",
+      "faq": "Questions that buyers should know before choosing that model"
+    },
+    "sources": {
+      "official": "Official brand or distributor website",
+      "dealer": "Price sheet, quotation, or dealer announcement",
+      "proof": "Screenshot with date or a public URL"
+    }
+  },
+  "dataQuality": {
+    "title": "Data quality check",
+    "subtitle": "Developer page for spotting models missing sources, key specs, or recent verification.",
+    "summary": "Summary",
+    "totalCars": "Total cars",
+    "missingSources": "Missing sources",
+    "staleCars": "Stale over 60 days",
+    "missingSpecs": "Missing key specs",
+    "allGood": "No issues found in the current dataset",
+    "lastChecked": "Last checked",
+    "issues": "Issues"
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "subtitle": "Basic questions for Thai EV buyers and new owners."
+  }
+}
