@@ -1,9 +1,21 @@
 import {ExternalLink} from "lucide-react";
 import {getTranslations, setRequestLocale} from "next-intl/server";
+import type {Metadata} from "next";
 import type {Locale} from "@/i18n/routing";
 import {Badge} from "@/components/ui/badge";
 import {getReferenceSources, type ReferenceSource} from "@/lib/data/references";
 import {localize} from "@/lib/format";
+import {buildMetadata} from "@/lib/seo";
+
+export async function generateMetadata({params}: {params: Promise<{locale: Locale}>}): Promise<Metadata> {
+  const {locale} = await params;
+  return buildMetadata({
+    locale,
+    path: "/references",
+    title: locale === "th" ? "แหล่งอ้างอิงรถ EV" : "EV reference sources",
+    description: locale === "th" ? "แหล่งอ้างอิงทางการสำหรับตรวจสอบราคา สเปค โปรโมชัน และข้อมูลรถ EV ในไทย" : "Official reference sources for checking EV prices, specs, promotions, and information in Thailand."
+  });
+}
 
 export default async function ReferencesPage({params}: {params: Promise<{locale: Locale}>}) {
   const {locale} = await params;

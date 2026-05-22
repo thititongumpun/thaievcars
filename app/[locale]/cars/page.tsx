@@ -1,7 +1,19 @@
 import {getTranslations, setRequestLocale} from "next-intl/server";
+import type {Metadata} from "next";
 import type {Locale} from "@/i18n/routing";
 import {CarListing} from "@/components/car/car-listing";
 import {getModels} from "@/lib/data/models";
+import {buildMetadata} from "@/lib/seo";
+
+export async function generateMetadata({params}: {params: Promise<{locale: Locale}>}): Promise<Metadata> {
+  const {locale} = await params;
+  return buildMetadata({
+    locale,
+    path: "/cars",
+    title: locale === "th" ? "ค้นหารถ EV ในไทย" : "Find EV cars in Thailand",
+    description: locale === "th" ? "ค้นหาและกรองรถ EV ในไทยตามแบรนด์ ราคา ระยะทาง ระบบขับเคลื่อน และสถานะการขาย" : "Search and filter EV models in Thailand by brand, price, range, drivetrain, and sale status."
+  });
+}
 
 export default async function CarsPage({params}: {params: Promise<{locale: Locale}>}) {
   const {locale} = await params;

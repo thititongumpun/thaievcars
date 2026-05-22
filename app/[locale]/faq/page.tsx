@@ -1,9 +1,21 @@
 import {getTranslations, setRequestLocale} from "next-intl/server";
+import type {Metadata} from "next";
 import type {Locale} from "@/i18n/routing";
 import {Link} from "@/i18n/navigation";
 import {getFAQCategories, getFAQItems} from "@/lib/data/faq";
 import {getModels} from "@/lib/data/models";
 import {localize} from "@/lib/format";
+import {buildMetadata} from "@/lib/seo";
+
+export async function generateMetadata({params}: {params: Promise<{locale: Locale}>}): Promise<Metadata> {
+  const {locale} = await params;
+  return buildMetadata({
+    locale,
+    path: "/faq",
+    title: locale === "th" ? "FAQ รถ EV" : "EV FAQ",
+    description: locale === "th" ? "คำถามที่พบบ่อยสำหรับคนกำลังซื้อหรือเริ่มใช้รถ EV ในประเทศไทย" : "Frequently asked questions for EV buyers and new owners in Thailand."
+  });
+}
 
 export default async function FAQPage({params}: {params: Promise<{locale: Locale}>}) {
   const {locale} = await params;

@@ -1,8 +1,21 @@
 import {setRequestLocale, getTranslations} from "next-intl/server";
+import type {Metadata} from "next";
 import type {Locale} from "@/i18n/routing";
 import {Badge} from "@/components/ui/badge";
 import {getDataQualityReport} from "@/lib/data/quality";
 import {localize} from "@/lib/format";
+import {buildMetadata} from "@/lib/seo";
+
+export async function generateMetadata({params}: {params: Promise<{locale: Locale}>}): Promise<Metadata> {
+  const {locale} = await params;
+  return buildMetadata({
+    locale,
+    path: "/data-quality",
+    title: "Data quality",
+    description: "Internal data quality report for ThaiEVCars content.",
+    noIndex: true
+  });
+}
 
 export default async function DataQualityPage({params}: {params: Promise<{locale: Locale}>}) {
   const {locale} = await params;

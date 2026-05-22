@@ -1,11 +1,35 @@
 import {notFound} from "next/navigation";
 import {setRequestLocale} from "next-intl/server";
+import type {Metadata} from "next";
 import type {Locale} from "@/i18n/routing";
 import {CarCard} from "@/components/car/car-card";
 import {Badge} from "@/components/ui/badge";
 import {getBrandBySlug, getModelsByBrandSlug} from "@/lib/data/brands";
 import {getModels} from "@/lib/data/models";
 import {localize} from "@/lib/format";
+import {buildMetadata} from "@/lib/seo";
+
+export async function generateMetadata({params}: {params: Promise<{locale: Locale; slug: string}>}): Promise<Metadata> {
+  const {locale, slug} = await params;
+  const brand = await getBrandBySlug(slug);
+
+  if (!brand) {
+    return buildMetadata({
+      locale,
+      path: `/brands/${slug}`,
+      title: "Brand not found",
+      description: "Brand not found",
+      noIndex: true
+    });
+  }
+
+  return buildMetadata({
+    locale,
+    path: `/brands/${slug}`,
+    title: localize(brand.name, locale),
+    description: localize(brand.description, locale)
+  });
+}
 
 export async function generateStaticParams() {
   const models = await getModels();

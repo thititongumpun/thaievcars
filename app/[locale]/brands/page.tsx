@@ -1,7 +1,19 @@
 import {setRequestLocale} from "next-intl/server";
+import type {Metadata} from "next";
 import type {Locale} from "@/i18n/routing";
 import {BrandCard} from "@/components/brand/brand-card";
 import {getBrands} from "@/lib/data/brands";
+import {buildMetadata} from "@/lib/seo";
+
+export async function generateMetadata({params}: {params: Promise<{locale: Locale}>}): Promise<Metadata> {
+  const {locale} = await params;
+  return buildMetadata({
+    locale,
+    path: "/brands",
+    title: locale === "th" ? "แบรนด์รถ EV ในไทย" : "EV brands in Thailand",
+    description: locale === "th" ? "รวมแบรนด์รถ EV ที่ขายในประเทศไทย พร้อมจำนวนรุ่นและข้อมูลพื้นฐาน" : "Browse electric vehicle brands sold in Thailand with model counts and brand details."
+  });
+}
 
 export default async function BrandsPage({params}: {params: Promise<{locale: Locale}>}) {
   const {locale} = await params;

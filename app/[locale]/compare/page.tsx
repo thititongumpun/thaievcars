@@ -1,7 +1,19 @@
 import {getTranslations, setRequestLocale} from "next-intl/server";
+import type {Metadata} from "next";
 import type {Locale} from "@/i18n/routing";
 import {CompareTool} from "@/components/compare/compare-tool";
 import {getModels} from "@/lib/data/models";
+import {buildMetadata} from "@/lib/seo";
+
+export async function generateMetadata({params}: {params: Promise<{locale: Locale}>}): Promise<Metadata> {
+  const {locale} = await params;
+  return buildMetadata({
+    locale,
+    path: "/compare",
+    title: locale === "th" ? "เปรียบเทียบรถ EV" : "Compare EV cars",
+    description: locale === "th" ? "เปรียบเทียบรถ EV สูงสุด 3 รุ่น ทั้งราคา ระยะทาง แบตเตอรี่ กำลังมอเตอร์ และการชาร์จ" : "Compare up to 3 EV models by price, range, battery, power, and charging."
+  });
+}
 
 export default async function ComparePage({params}: {params: Promise<{locale: Locale}>}) {
   const {locale} = await params;

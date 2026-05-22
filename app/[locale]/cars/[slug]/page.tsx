@@ -2,6 +2,7 @@ import Image from "next/image";
 import {ExternalLink} from "lucide-react";
 import {notFound} from "next/navigation";
 import {setRequestLocale, getTranslations} from "next-intl/server";
+import type {Metadata} from "next";
 import type {Locale} from "@/i18n/routing";
 import {Badge} from "@/components/ui/badge";
 import {CarCard} from "@/components/car/car-card";
@@ -10,10 +11,42 @@ import {TrustBadge} from "@/components/car/trust-badge";
 import {Car360Viewer} from "@/components/car/car-360-viewer";
 import {formatThb, getCurrentPricing, getPreviousPricing, localize} from "@/lib/format";
 import {getFAQItemsForModel, getModelBySlug, getModels, getRelatedModels} from "@/lib/data/models";
+import {buildMetadata} from "@/lib/seo";
 
 export async function generateStaticParams() {
   const models = await getModels();
   return models.map((model) => ({slug: model.slug}));
+}
+
+export async function generateMetadata({params}: {params: Promise<{locale: Locale; slug: string}>}): Promise<Metadata> {
+  const {locale, slug} = await params;
+  const car = await getModelBySlug(slug);
+
+  if (!car) {
+    return buildMetadata({
+      locale,
+      path: `/cars/${slug}`,
+      title: "Car not found",
+      description: "Car not found",
+      noIndex: true
+    });
+  }
+
+  const currentPrice = getCurrentPricing(car.pricingPeriods);
+  const priceText = currentPrice ? ` ${formatThb(currentPrice.priceThb, locale)}` : "";
+  const title = `${localize(car.brand.name, locale)} ${localize(car.name, locale)}`;
+  const description =
+    locale === "th"
+      ? `${localize(car.shortDescription, locale)} ดูสเปค ระยะทาง การชาร์จ และราคาปัจจุบัน${priceText}`
+      : `${localize(car.shortDescription, locale)} See specs, range, charging, and current price${priceText}.`;
+
+  return buildMetadata({
+    locale,
+    path: `/cars/${slug}`,
+    title,
+    description,
+    image: car.images[0]
+  });
 }
 
 export default async function CarDetailPage({params}: {params: Promise<{locale: Locale; slug: string}>}) {

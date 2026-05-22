@@ -1,11 +1,23 @@
 import {BatteryCharging, CarFront, GitCompareArrows} from "lucide-react";
 import {getTranslations, setRequestLocale} from "next-intl/server";
+import type {Metadata} from "next";
 import type {Locale} from "@/i18n/routing";
 import {LinkButton} from "@/components/ui/link-button";
 import {BrandCard} from "@/components/brand/brand-card";
 import {CarCard} from "@/components/car/car-card";
 import {getFeaturedBrands} from "@/lib/data/brands";
 import {getModels, getNewArrivalModels} from "@/lib/data/models";
+import {buildMetadata, defaultSeo} from "@/lib/seo";
+
+export async function generateMetadata({params}: {params: Promise<{locale: Locale}>}): Promise<Metadata> {
+  const {locale} = await params;
+  return buildMetadata({
+    locale,
+    path: "/",
+    title: defaultSeo[locale].title,
+    description: defaultSeo[locale].description
+  });
+}
 
 export default async function HomePage({params}: {params: Promise<{locale: Locale}>}) {
   const {locale} = await params;

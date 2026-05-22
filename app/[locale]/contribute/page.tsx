@@ -1,8 +1,20 @@
 import {Mail} from "lucide-react";
 import {getTranslations, setRequestLocale} from "next-intl/server";
+import type {Metadata} from "next";
 import type {Locale} from "@/i18n/routing";
+import {buildMetadata} from "@/lib/seo";
 
 const contactEmail = "updates@thaievcars.local";
+
+export async function generateMetadata({params}: {params: Promise<{locale: Locale}>}): Promise<Metadata> {
+  const {locale} = await params;
+  return buildMetadata({
+    locale,
+    path: "/contribute",
+    title: locale === "th" ? "ช่วยอัปเดตข้อมูลรถ EV" : "Contribute EV updates",
+    description: locale === "th" ? "ส่งข้อมูลราคา สเปค โปรโมชัน หรือ FAQ รถ EV พร้อมแหล่งอ้างอิงให้ ThaiEVCars" : "Send EV price, spec, promotion, or FAQ updates with sources to ThaiEVCars."
+  });
+}
 
 export default async function ContributePage({params}: {params: Promise<{locale: Locale}>}) {
   const {locale} = await params;
