@@ -34,7 +34,7 @@ export function getPreviousPricing(periods: PricingPeriod[] | null | undefined) 
 
 export function getStartingPrice(car: CarModel | null | undefined) {
   if (!car) return undefined;
-  const prices = [getCurrentPricing(car.pricingPeriods), ...(car.variants || []).map((variant) => getCurrentPricing(variant?.pricingPeriods))]
+  const prices = (car.variants || []).map((variant) => getCurrentPricing(variant?.pricingPeriods))
     .filter((period): period is PricingPeriod => Boolean(period))
     .filter((period) => typeof period.priceThb === "number" && !Number.isNaN(period.priceThb))
     .map((period) => period.priceThb);

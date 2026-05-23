@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "sanity:import-seed": "node --env-file=.env.local scripts/import-seed-to-sanity.mjs"
+    "sanity:import-seed": "node --env-file=.env.local scripts/import-seed-to-sanity.mjs",
+    "sanity:clean": "npx tsx --env-file=.env.local scripts/clean-sanity.ts",
+    "sanity:seed": "npx tsx --env-file=.env.local scripts/seed-sanity.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",

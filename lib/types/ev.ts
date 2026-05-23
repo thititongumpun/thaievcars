@@ -22,6 +22,7 @@ export type SourceConfidence = "official" | "dealer" | "community" | "needs-veri
 export type CarSpecs = {
   rangeKm: number;
   batteryKwh: number;
+  batteryType?: string;
   motorKw: number;
   torqueNm: number;
   zeroToHundredSec: number;
@@ -36,11 +37,12 @@ export type CarSpecs = {
     heightMm: number;
   };
   ipRating: string;
+  frontSuspension?: string;
+  rearSuspension?: string;
 };
 
 export type Charging = {
   acMaxKw: number;
-  acChargeTimeH: number;
   dcMaxKw: number;
   dcTenToEightyMin: number;
   connectorTypes: string[];
@@ -67,12 +69,18 @@ export type PricingPeriod = {
   notes: LocalizedString;
 };
 
+export type VariantFAQItem = {
+  question: LocalizedString;
+  answer: LocalizedString;
+};
+
 export type CarVariant = {
   id: string;
   name: LocalizedString;
   specs: CarSpecs;
   charging: Charging;
   pricingPeriods: PricingPeriod[];
+  faqItems?: VariantFAQItem[];
 };
 
 export type CarModel = {
@@ -87,11 +95,8 @@ export type CarModel = {
   status: CarStatus;
   isNewArrival: boolean;
   bodyType: BodyType;
-  specs: CarSpecs;
-  charging: Charging;
   wheelsExterior: WheelsExterior;
-  pricingPeriods: PricingPeriod[];
-  variants?: CarVariant[];
+  variants: CarVariant[];
   sourceUrls: string[];
   officialPriceUrl: string;
   sourceConfidence: SourceConfidence;

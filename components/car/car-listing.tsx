@@ -45,9 +45,10 @@ export function CarListing({cars, locale}: {cars: CarWithBrand[]; locale: Locale
       if (price === "under700k" && currentPrice >= 700000) return false;
       if (price === "under1m" && currentPrice >= 1000000) return false;
       if (price === "over1m" && currentPrice < 1000000) return false;
-      if (range === "400" && car.specs.rangeKm < 400) return false;
-      if (range === "450" && car.specs.rangeKm < 450) return false;
-      if (drivetrain !== "all" && car.specs.drivetrain !== drivetrain) return false;
+      const firstSpecs = car.variants?.[0]?.specs;
+      if (range === "400" && (firstSpecs?.rangeKm ?? 0) < 400) return false;
+      if (range === "450" && (firstSpecs?.rangeKm ?? 0) < 450) return false;
+      if (drivetrain !== "all" && firstSpecs?.drivetrain !== drivetrain) return false;
       if (status !== "all" && car.status !== status) return false;
 
       return true;
@@ -192,9 +193,9 @@ function ListingCard({car, locale}: {car: CarWithBrand; locale: Locale}) {
         </div>
         <h3 className="font-semibold group-hover:text-green-700">{localize(car.name, locale)}</h3>
         <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-          <Metric label="Range" value={`${car.specs.rangeKm} km`} />
-          <Metric label="Battery" value={`${car.specs.batteryKwh} kWh`} />
-          <Metric label="Drive" value={car.specs.drivetrain} />
+          <Metric label="Range" value={`${car.variants?.[0]?.specs?.rangeKm ?? "-"} km`} />
+          <Metric label="Battery" value={`${car.variants?.[0]?.specs?.batteryKwh ?? "-"} kWh`} />
+          <Metric label="Drive" value={car.variants?.[0]?.specs?.drivetrain ?? "-"} />
           <Metric label="Price" value={startingPrice ? formatThb(startingPrice, locale) : "-"} />
         </div>
       </div>

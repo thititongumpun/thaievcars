@@ -24,17 +24,11 @@ export function normalizeCar(car: CarWithBrand): CarWithBrand {
     lastVerifiedAt: car.lastVerifiedAt || "2026-05-23",
     lastUpdatedBy: car.lastUpdatedBy || "Sanity",
     warranty: car.warranty || {vehicleYears: 0, vehicleKm: 0, batteryYears: 0, batteryKm: 0},
-    pricingPeriods: car.pricingPeriods || [],
-    variants: car.variants || [],
-    charging: car.charging || {
-      acMaxKw: 0,
-      acChargeTimeH: 0,
-      dcMaxKw: 0,
-      dcTenToEightyMin: 0,
-      connectorTypes: [],
-      v2lSupport: false,
-      homeChargerRequired: false
-    },
+    variants: (car.variants || []).map((v) => ({
+      ...v,
+      pricingPeriods: v.pricingPeriods || [],
+      faqItems: v.faqItems || []
+    })),
     wheelsExterior: car.wheelsExterior || {
       wheelSizeInch: 0,
       tireSize: "",

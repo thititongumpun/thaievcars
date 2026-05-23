@@ -25,7 +25,8 @@ export async function getDataQualityReport() {
       issues.push(`not verified in ${staleDays}+ days`);
     }
 
-    if (!car.specs.rangeKm || !car.specs.batteryKwh || !car.charging.dcMaxKw || !car.warranty.batteryYears) {
+    const firstVariant = car.variants?.[0];
+    if (!firstVariant?.specs?.rangeKm || !firstVariant?.specs?.batteryKwh || !firstVariant?.charging?.dcMaxKw || !car.warranty.batteryYears) {
       issues.push("missing key specs");
     }
 
@@ -42,7 +43,7 @@ export async function getDataQualityReport() {
     totalCars: cars.length,
     missingSources: rows.filter((row) => row.car.sourceUrls.length === 0 || !row.car.officialPriceUrl).length,
     staleCars: rows.filter((row) => row.daysSinceVerified > staleDays).length,
-    missingSpecs: rows.filter((row) => !row.car.specs.rangeKm || !row.car.specs.batteryKwh || !row.car.charging.dcMaxKw || !row.car.warranty.batteryYears).length,
+    missingSpecs: rows.filter((row) => !row.car.variants?.[0]?.specs?.rangeKm || !row.car.variants?.[0]?.specs?.batteryKwh || !row.car.variants?.[0]?.charging?.dcMaxKw || !row.car.warranty.batteryYears).length,
     rows: problemRows
   };
 }

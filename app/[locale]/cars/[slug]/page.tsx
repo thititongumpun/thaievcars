@@ -12,7 +12,7 @@ import {CarTabs} from "@/components/car/car-tabs";
 import {TrustBadge} from "@/components/car/trust-badge";
 import {Car360Viewer} from "@/components/car/car-360-viewer";
 import {formatThb, getCurrentPricing, getPreviousPricing, getStartingPrice, localize} from "@/lib/format";
-import {getFAQItemsForModel, getModelBySlug, getModels, getRelatedModels} from "@/lib/data/models";
+import {getModelBySlug, getModels, getRelatedModels} from "@/lib/data/models";
 import {buildMetadata} from "@/lib/seo";
 
 export async function generateStaticParams() {
@@ -59,11 +59,11 @@ export default async function CarDetailPage({params}: {params: Promise<{locale: 
   const car = await getModelBySlug(slug);
   if (!car) notFound();
 
-  const currentPrice = getCurrentPricing(car.pricingPeriods);
+  const firstVariant = car.variants?.[0];
+  const currentPrice = getCurrentPricing(firstVariant?.pricingPeriods);
   const startingPrice = getStartingPrice(car);
-  const previousPrice = getPreviousPricing(car.pricingPeriods);
+  const previousPrice = getPreviousPricing(firstVariant?.pricingPeriods);
   const relatedCars = await getRelatedModels(car.slug);
-  const faqItems = await getFAQItemsForModel(car.id);
 
   return (
     <article className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -108,7 +108,7 @@ export default async function CarDetailPage({params}: {params: Promise<{locale: 
 
       {car.spinImages?.length ? <Car360Viewer images={car.spinImages} alt={localize(car.name, locale)} /> : null}
 
-      <CarTabs car={car} locale={locale} faqItems={faqItems} />
+      <CarTabs car={car} locale={locale} />
 
       <section className="mt-8 grid gap-4 md:grid-cols-2">
         <Card>
@@ -117,11 +117,11 @@ export default async function CarDetailPage({params}: {params: Promise<{locale: 
           <dl className="mt-3 grid gap-3 text-sm">
             <div className="flex justify-between gap-4 border-b border-border pb-3">
               <dt className="text-muted-foreground">Vehicle</dt>
-              <dd className="font-semibold">{car.warranty.vehicleYears} years / {car.warranty.vehicleKm.toLocaleString()} km</dd>
+              <dd className="font-semibold">{car.warranty?.vehicleYears ?? "-"} years / {car.warranty?.vehicleKm?.toLocaleString() ?? "-"} km</dd>
             </div>
             <div className="flex justify-between gap-4">
               <dt className="text-muted-foreground">Battery</dt>
-              <dd className="font-semibold">{car.warranty.batteryYears} years / {car.warranty.batteryKm.toLocaleString()} km</dd>
+              <dd className="font-semibold">{car.warranty?.batteryYears ?? "-"} years / {car.warranty?.batteryKm?.toLocaleString() ?? "-"} km</dd>
             </div>
           </dl>
           </CardContent>

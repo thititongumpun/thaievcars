@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   const documentType = typeof body._type === "string" ? body._type : undefined;
   const tags = documentType ? documentTypeTags[documentType] ?? ["sanity"] : ["sanity"];
 
-  tags.forEach((tag) => revalidateTag(tag, "max"));
+  tags.map((tag) => revalidateTag(tag, "max"));
 
   return NextResponse.json({
     ok: true,

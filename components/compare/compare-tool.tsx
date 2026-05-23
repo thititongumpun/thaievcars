@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import type { Locale } from "@/i18n/routing";
 import type { CarWithBrand } from "@/lib/types/ev";
-import { formatNumber, formatThb, getCurrentPricing, localize } from "@/lib/format";
+import { formatNumber, formatThb, getStartingPrice, localize } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -34,14 +34,14 @@ export function CompareTool({ cars, locale }: { cars: CarWithBrand[]; locale: Lo
   }
 
   const rows = [
-    { label: "Price", value: (car: CarWithBrand) => formatThb(getCurrentPricing(car.pricingPeriods)?.priceThb ?? 0, locale) },
-    { label: "Range", value: (car: CarWithBrand) => `${formatNumber(car.specs.rangeKm, locale)} km` },
-    { label: "Battery", value: (car: CarWithBrand) => `${car.specs.batteryKwh} kWh` },
-    { label: "Power", value: (car: CarWithBrand) => `${car.specs.motorKw} kW` },
-    { label: "Torque", value: (car: CarWithBrand) => `${formatNumber(car.specs.torqueNm, locale)} Nm` },
-    { label: "0-100", value: (car: CarWithBrand) => `${car.specs.zeroToHundredSec} s` },
-    { label: "DC charging", value: (car: CarWithBrand) => `${car.charging.dcMaxKw} kW` },
-    { label: "Drivetrain", value: (car: CarWithBrand) => car.specs.drivetrain }
+    { label: "Price", value: (car: CarWithBrand) => formatThb(getStartingPrice(car) ?? 0, locale) },
+    { label: "Range", value: (car: CarWithBrand) => `${formatNumber(car.variants?.[0]?.specs?.rangeKm, locale)} km` },
+    { label: "Battery", value: (car: CarWithBrand) => `${car.variants?.[0]?.specs?.batteryKwh ?? "-"} kWh` },
+    { label: "Power", value: (car: CarWithBrand) => `${car.variants?.[0]?.specs?.motorKw ?? "-"} kW` },
+    { label: "Torque", value: (car: CarWithBrand) => `${formatNumber(car.variants?.[0]?.specs?.torqueNm, locale)} Nm` },
+    { label: "0-100", value: (car: CarWithBrand) => `${car.variants?.[0]?.specs?.zeroToHundredSec ?? "-"} s` },
+    { label: "DC charging", value: (car: CarWithBrand) => `${car.variants?.[0]?.charging?.dcMaxKw ?? "-"} kW` },
+    { label: "Drivetrain", value: (car: CarWithBrand) => car.variants?.[0]?.specs?.drivetrain ?? "-" }
   ];
 
   return (
