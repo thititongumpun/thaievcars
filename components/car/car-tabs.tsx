@@ -92,7 +92,7 @@ function VariantTable({variants, locale}: {variants: CarVariant[]; locale: Local
     }},
     {label: t("range"), value: (variant: CarVariant) => unit(formatNumber(variant.specs?.rangeKm, locale), " km")},
     {label: t("battery"), value: (variant: CarVariant) => unit(variant.specs?.batteryKwh, " kWh")},
-    {label: t("power"), value: (variant: CarVariant) => unit(variant.specs?.motorKw, " kW")},
+    {label: t("power"), value: (variant: CarVariant) => unit(variant.specs?.motorHp, " hp")},
     {label: t("torque"), value: (variant: CarVariant) => unit(formatNumber(variant.specs?.torqueNm, locale), " Nm")},
     {label: t("acceleration"), value: (variant: CarVariant) => unit(variant.specs?.zeroToHundredSec, " s")},
     {label: t("drivetrain"), value: (variant: CarVariant) => unit(variant.specs?.drivetrain)},
@@ -151,7 +151,7 @@ function SpecTable({variant, wheelsExterior, locale}: {variant: CarVariant; whee
           <Row label={t("range")} value={unit(formatNumber(specs?.rangeKm, locale), " km")} />
           <Row label={t("battery")} value={unit(specs?.batteryKwh, " kWh")} />
           <Row label={t("batteryType")} value={unit(specs?.batteryType)} />
-          <Row label={t("power")} value={unit(specs?.motorKw, " kW")} />
+          <Row label={t("power")} value={unit(specs?.motorHp, " hp")} />
           <Row label={t("torque")} value={unit(formatNumber(specs?.torqueNm, locale), " Nm")} />
           <Row label={t("acceleration")} value={unit(specs?.zeroToHundredSec, " s")} />
           <Row label={t("topSpeed")} value={unit(formatNumber(specs?.topSpeedKmh, locale), " km/h")} />

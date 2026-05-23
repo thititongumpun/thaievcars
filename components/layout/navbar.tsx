@@ -21,7 +21,7 @@ export async function Navbar() {
           <span className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-subtle">
             <CarFront className="h-5 w-5" aria-hidden="true" />
           </span>
-          <span className="truncate">ThaiEVCars</span>
+          <span className="truncate">Thai EV Cars</span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
           <NavLinks items={items} />

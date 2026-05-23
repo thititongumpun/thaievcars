@@ -39,7 +39,7 @@
     "range": "Range",
     "battery": "Battery",
     "batteryType": "Battery type",
-    "power": "Motor power",
+    "power": "Horsepower",
     "torque": "Torque",
     "acceleration": "0-100 km/h",
     "topSpeed": "Top speed",
@@ -141,5 +141,8 @@
   "faq": {
     "title": "Frequently asked questions",
     "subtitle": "Basic questions for Thai EV buyers and new owners."
+  },
+  "footer": {
+    "description": "Community EV reference for Thailand."
   }
 }

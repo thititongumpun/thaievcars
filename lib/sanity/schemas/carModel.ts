@@ -63,7 +63,7 @@ export const carModel = defineType({
                 defineField({name: "rangeKm", title: "Range km", type: "number"}),
                 defineField({name: "batteryKwh", title: "Battery kWh", type: "number"}),
                 defineField({name: "batteryType", title: "Battery type", type: "string", options: {list: ["NMC", "LFP", "NCA", "LFMP"]}}),
-                defineField({name: "motorKw", title: "Motor kW", type: "number"}),
+                defineField({name: "motorHp", title: "Motor hp", type: "number"}),
                 defineField({name: "torqueNm", title: "Torque Nm", type: "number"}),
                 defineField({name: "zeroToHundredSec", title: "0-100 sec", type: "number"}),
                 defineField({name: "topSpeedKmh", title: "Top speed km/h", type: "number"}),

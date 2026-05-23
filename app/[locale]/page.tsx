@@ -1,18 +1,18 @@
-import {BatteryCharging, CarFront, GitCompareArrows} from "lucide-react";
+import { BatteryCharging, CarFront, GitCompareArrows } from "lucide-react";
 import Image from "next/image";
-import {getTranslations, setRequestLocale} from "next-intl/server";
-import type {Metadata} from "next";
-import type {Locale} from "@/i18n/routing";
-import {LinkButton} from "@/components/ui/link-button";
-import {BrandCard} from "@/components/brand/brand-card";
-import {CarCard} from "@/components/car/car-card";
-import {Card, CardContent} from "@/components/ui/card";
-import {getFeaturedBrands} from "@/lib/data/brands";
-import {getModels, getNewArrivalModels} from "@/lib/data/models";
-import {buildMetadata, defaultSeo} from "@/lib/seo";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import type { Locale } from "@/i18n/routing";
+import { LinkButton } from "@/components/ui/link-button";
+import { BrandCard } from "@/components/brand/brand-card";
+import { CarCard } from "@/components/car/car-card";
+import { Card, CardContent } from "@/components/ui/card";
+import { getBrands } from "@/lib/data/brands";
+import { getModels, getNewArrivalModels } from "@/lib/data/models";
+import { buildMetadata, defaultSeo } from "@/lib/seo";
 
-export async function generateMetadata({params}: {params: Promise<{locale: Locale}>}): Promise<Metadata> {
-  const {locale} = await params;
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+  const { locale } = await params;
   return buildMetadata({
     locale,
     path: "/",
@@ -21,11 +21,11 @@ export async function generateMetadata({params}: {params: Promise<{locale: Local
   });
 }
 
-export default async function HomePage({params}: {params: Promise<{locale: Locale}>}) {
-  const {locale} = await params;
+export default async function HomePage({ params }: { params: Promise<{ locale: Locale }> }) {
+  const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("home");
-  const brands = await getFeaturedBrands();
+  const brands = await getBrands();
   const models = await getModels();
   const newModels = await getNewArrivalModels();
 
@@ -104,12 +104,12 @@ export default async function HomePage({params}: {params: Promise<{locale: Local
   );
 }
 
-function Stat({value, label}: {value: number; label: string}) {
+function Stat({ value, label }: { value: number; label: string }) {
   return (
     <Card>
       <CardContent className="p-5">
-      <p className="text-3xl font-bold">{value}</p>
-      <p className="mt-1 text-sm text-muted-foreground">{label}</p>
+        <p className="text-3xl font-bold">{value}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{label}</p>
       </CardContent>
     </Card>
   );

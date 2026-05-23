@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import type { Locale } from "@/i18n/routing";
-import type { CarWithBrand } from "@/lib/types/ev";
-import { formatNumber, formatThb, getStartingPrice, localize } from "@/lib/format";
+import type { CarVariant, CarWithBrand } from "@/lib/types/ev";
+import { formatNumber, formatThb, getCurrentPricing, localize } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -13,69 +13,140 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
+type SlotKey = string; // `${carId}::${variantId}`
+
+type Slot = {
+  key: SlotKey;
+  car: CarWithBrand;
+  variant: CarVariant;
+};
 
 export function CompareTool({ cars, locale }: { cars: CarWithBrand[]; locale: Locale }) {
   const t = useTranslations("compare");
-  const [selectedIds, setSelectedIds] = useState<string[]>(cars.slice(0, 2).map((car) => car.id));
-  const [addValue, setAddValue] = useState("");
-  const selectedCars = useMemo(() => selectedIds.map((id) => cars.find((car) => car.id === id)).filter((car): car is CarWithBrand => Boolean(car)), [cars, selectedIds]);
-  const remainingCars = cars.filter((car) => !selectedIds.includes(car.id));
+  const tCar = useTranslations("car");
+  const tCommon = useTranslations("common");
 
-  function addCar(id: string) {
-    if (!id || selectedIds.length >= 3) return;
-    setSelectedIds((current) => [...current, id]);
-    setAddValue("");
+  const [slots, setSlots] = useState<Slot[]>([]);
+  const [pendingCarId, setPendingCarId] = useState("");
+  const [pendingVariantId, setPendingVariantId] = useState("");
+
+  const pendingCar = cars.find((c) => c.id === pendingCarId) ?? null;
+  const pendingVariants = pendingCar?.variants ?? [];
+
+  function addSlot() {
+    if (!pendingCarId || !pendingVariantId || slots.length >= 3) return;
+    const key: SlotKey = `${pendingCarId}::${pendingVariantId}`;
+    if (slots.some((s) => s.key === key)) return;
+    const car = cars.find((c) => c.id === pendingCarId)!;
+    const variant = car.variants.find((v) => v.id === pendingVariantId)!;
+    setSlots((prev) => [...prev, { key, car, variant }]);
+    setPendingCarId("");
+    setPendingVariantId("");
   }
 
-  function removeCar(id: string) {
-    setSelectedIds((current) => current.filter((item) => item !== id));
+  function removeSlot(key: SlotKey) {
+    setSlots((prev) => prev.filter((s) => s.key !== key));
   }
 
-  const rows = [
-    { label: "Price", value: (car: CarWithBrand) => formatThb(getStartingPrice(car) ?? 0, locale) },
-    { label: "Range", value: (car: CarWithBrand) => `${formatNumber(car.variants?.[0]?.specs?.rangeKm, locale)} km` },
-    { label: "Battery", value: (car: CarWithBrand) => `${car.variants?.[0]?.specs?.batteryKwh ?? "-"} kWh` },
-    { label: "Power", value: (car: CarWithBrand) => `${car.variants?.[0]?.specs?.motorKw ?? "-"} kW` },
-    { label: "Torque", value: (car: CarWithBrand) => `${formatNumber(car.variants?.[0]?.specs?.torqueNm, locale)} Nm` },
-    { label: "0-100", value: (car: CarWithBrand) => `${car.variants?.[0]?.specs?.zeroToHundredSec ?? "-"} s` },
-    { label: "DC charging", value: (car: CarWithBrand) => `${car.variants?.[0]?.charging?.dcMaxKw ?? "-"} kW` },
-    { label: "Drivetrain", value: (car: CarWithBrand) => car.variants?.[0]?.specs?.drivetrain ?? "-" }
+  const rows: { label: string; value: (s: Slot) => string }[] = [
+    {
+      label: tCommon("currentPrice"),
+      value: (s) => {
+        const p = getCurrentPricing(s.variant.pricingPeriods);
+        return p ? formatThb(p.priceThb, locale) : "-";
+      },
+    },
+    { label: tCar("range"), value: (s) => `${formatNumber(s.variant.specs?.rangeKm, locale)} km` },
+    { label: tCar("battery"), value: (s) => `${s.variant.specs?.batteryKwh ?? "-"} kWh` },
+    { label: tCar("batteryType"), value: (s) => s.variant.specs?.batteryType ?? "-" },
+    { label: tCar("power"), value: (s) => `${s.variant.specs?.motorHp ?? "-"} hp` },
+    { label: tCar("torque"), value: (s) => `${formatNumber(s.variant.specs?.torqueNm, locale)} Nm` },
+    { label: tCar("acceleration"), value: (s) => `${s.variant.specs?.zeroToHundredSec ?? "-"} s` },
+    { label: tCar("topSpeed"), value: (s) => `${s.variant.specs?.topSpeedKmh ?? "-"} km/h` },
+    { label: tCar("drivetrain"), value: (s) => s.variant.specs?.drivetrain ?? "-" },
+    { label: tCar("acCharging"), value: (s) => `${s.variant.charging?.acMaxKw ?? "-"} kW` },
+    { label: tCar("dcCharging"), value: (s) => `${s.variant.charging?.dcMaxKw ?? "-"} kW` },
+    {
+      label: "DC 10→80%",
+      value: (s) =>
+        s.variant.charging?.dcTenToEightyMin ? `${s.variant.charging.dcTenToEightyMin} min` : "-",
+    },
+    { label: tCar("v2l"), value: (s) => (s.variant.charging?.v2lSupport ? "✓" : "✗") },
+    { label: tCar("seats"), value: (s) => `${s.variant.specs?.seating ?? "-"}` },
+    { label: tCar("cargo"), value: (s) => `${s.variant.specs?.cargoL ?? "-"} L` },
   ];
 
   return (
     <div className="space-y-6">
       <Card>
         <CardContent className="p-4">
-          <label className="text-sm font-semibold" htmlFor="add-car">
-            {t("addCar")}
-          </label>
-          <div className="mt-2 flex flex-col gap-2 sm:flex-row">
-            <Select value={addValue} onValueChange={(value) => addCar(value ?? "")} disabled={selectedIds.length >= 3}>
-              <SelectTrigger id="add-car" className="w-full sm:w-80">
+          <p className="mb-2 text-sm font-semibold">{t("addCar")}</p>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <Select
+              value={pendingCarId}
+              onValueChange={(v) => { setPendingCarId(v ?? ""); setPendingVariantId(""); }}
+              disabled={slots.length >= 3}
+            >
+              <SelectTrigger className="w-full sm:w-52">
                 <SelectValue placeholder="Select model" />
               </SelectTrigger>
               <SelectContent>
-                {remainingCars.map((car) => (
+                {cars.map((car) => (
                   <SelectItem key={car.id} value={car.id}>
                     {localize(car.brand.name, locale)} {localize(car.name, locale)}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            <div className="flex flex-wrap gap-2">
-              {selectedCars.map((car) => (
-                <Button key={car.id} type="button" variant="secondary" onClick={() => removeCar(car.id)}>
-                  {localize(car.name, locale)} x
+
+            <Select
+              value={pendingVariantId}
+              onValueChange={(v) => setPendingVariantId(v ?? "")}
+              disabled={!pendingCar || slots.length >= 3}
+            >
+              <SelectTrigger className="w-full sm:w-44">
+                <SelectValue placeholder="Select variant" />
+              </SelectTrigger>
+              <SelectContent>
+                {pendingVariants.map((v) => (
+                  <SelectItem key={v.id} value={v.id}>
+                    {localize(v.name, locale)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Button
+              type="button"
+              onClick={addSlot}
+              disabled={!pendingCarId || !pendingVariantId || slots.length >= 3}
+            >
+              {t("addCar")}
+            </Button>
+          </div>
+
+          {slots.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {slots.map((s) => (
+                <Button
+                  key={s.key}
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => removeSlot(s.key)}
+                >
+                  {localize(s.car.name, locale)} · {localize(s.variant.name, locale)} ×
                 </Button>
               ))}
             </div>
-          </div>
+          )}
         </CardContent>
       </Card>
 
-      {selectedCars.length < 2 ? (
+      {slots.length < 2 ? (
         <Card className="border-dashed">
           <CardContent className="p-6 text-sm text-muted-foreground">{t("empty")}</CardContent>
         </Card>
@@ -86,9 +157,12 @@ export function CompareTool({ cars, locale }: { cars: CarWithBrand[]; locale: Lo
               <TableHeader>
                 <TableRow className="bg-muted/60 hover:bg-muted/60">
                   <TableHead className="w-44">Spec</TableHead>
-                  {selectedCars.map((car) => (
-                    <TableHead key={car.id}>
-                      {localize(car.name, locale)}
+                  {slots.map((s) => (
+                    <TableHead key={s.key}>
+                      <div className="font-semibold">{localize(s.car.name, locale)}</div>
+                      <div className="text-xs font-normal text-muted-foreground">
+                        {localize(s.variant.name, locale)}
+                      </div>
                     </TableHead>
                   ))}
                 </TableRow>
@@ -97,9 +171,9 @@ export function CompareTool({ cars, locale }: { cars: CarWithBrand[]; locale: Lo
                 {rows.map((row) => (
                   <TableRow key={row.label}>
                     <TableCell className="font-medium text-muted-foreground">{row.label}</TableCell>
-                    {selectedCars.map((car) => (
-                      <TableCell key={car.id} className="font-semibold">
-                        {row.value(car)}
+                    {slots.map((s) => (
+                      <TableCell key={s.key} className="font-semibold">
+                        {row.value(s)}
                       </TableCell>
                     ))}
                   </TableRow>

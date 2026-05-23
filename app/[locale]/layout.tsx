@@ -4,7 +4,7 @@ import {notFound} from "next/navigation";
 import type {Locale} from "@/i18n/routing";
 import {locales} from "@/i18n/routing";
 import {Navbar} from "@/components/layout/navbar";
-import {Footer} from "@/components/layout/footer";
+import Footer from "@/components/layout/footer";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({locale}));

@@ -23,7 +23,7 @@ export type CarSpecs = {
   rangeKm: number;
   batteryKwh: number;
   batteryType?: string;
-  motorKw: number;
+  motorHp: number;
   torqueNm: number;
   zeroToHundredSec: number;
   topSpeedKmh: number;
