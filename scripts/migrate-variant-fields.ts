@@ -7,18 +7,40 @@ type PricingPeriod = {
 type Variant = {
   _key?: string;
   id?: string;
+  images?: unknown[];
+  externalImageUrls?: string[];
   saleStartYear?: number;
   saleEndYear?: number | null;
   status?: "on-sale" | "discontinued";
+  wheelsExterior?: unknown;
   pricingPeriods?: PricingPeriod[];
 };
 
 type CarModelDoc = {
   _id: string;
   year?: number;
+  legacyImageUrls?: string[];
   status?: "on-sale" | "discontinued";
+  wheelsExterior?: unknown;
   variants?: Variant[];
 };
+
+const removedModelFields = [
+  "year",
+  "images",
+  "externalImageUrls",
+  "spinImages",
+  "externalSpinImageUrls",
+  "status",
+  "isNewArrival",
+  "wheelsExterior",
+  "sourceUrls",
+  "officialPriceUrl",
+  "sourceConfidence",
+  "lastVerifiedAt",
+  "lastUpdatedBy",
+  "warranty"
+];
 
 const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
@@ -41,10 +63,12 @@ function getSaleStartYear(variant: Variant, modelYear: number | undefined) {
 async function migrate() {
   const docs = await client.fetch<CarModelDoc[]>(
     `*[_type == "carModel"]{
-      _id,
-      year,
-      status,
-      variants[]{
+	      _id,
+	      year,
+	      "legacyImageUrls": select(count(images) > 0 => images[].asset->url, externalImageUrls),
+	      status,
+	      wheelsExterior,
+	      variants[]{
         ...,
         pricingPeriods[]{startDate}
       }
@@ -58,21 +82,34 @@ async function migrate() {
 
   for (const doc of docs) {
     const variants = doc.variants || [];
-    const nextVariants = variants.map((variant) => ({
-      ...variant,
-      saleStartYear: getSaleStartYear(variant, doc.year),
-      saleEndYear: variant.saleEndYear ?? null,
-      status: variant.status || doc.status || "on-sale"
-    }));
+    const nextVariants = variants.map((variant, index) => {
+      const shouldUseLegacyImages =
+        index === 0 &&
+        !variant.images?.length &&
+        !variant.externalImageUrls?.length &&
+        Boolean(doc.legacyImageUrls?.length);
+
+      return {
+        ...variant,
+        ...(shouldUseLegacyImages ? {externalImageUrls: doc.legacyImageUrls} : {}),
+        saleStartYear: getSaleStartYear(variant, doc.year),
+        saleEndYear: variant.saleEndYear ?? null,
+        status: variant.status || doc.status || "on-sale",
+        wheelsExterior: variant.wheelsExterior || doc.wheelsExterior
+      };
+    });
 
     const shouldPatch =
-      typeof doc.year === "number" ||
+      removedModelFields.some((field) => field in doc) ||
+      Boolean(doc.legacyImageUrls?.length) ||
       variants.some((variant, index) => {
         const next = nextVariants[index];
         return (
+          variant.externalImageUrls !== next.externalImageUrls ||
           variant.saleStartYear !== next.saleStartYear ||
           variant.saleEndYear !== next.saleEndYear ||
-          variant.status !== next.status
+          variant.status !== next.status ||
+          variant.wheelsExterior !== next.wheelsExterior
         );
       });
 
@@ -81,7 +118,7 @@ async function migrate() {
     tx.patch(doc._id, (patch) =>
       patch
         .set({variants: nextVariants})
-        .unset(["year"])
+        .unset(removedModelFields)
     );
     changed += 1;
   }

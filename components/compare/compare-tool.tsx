@@ -184,7 +184,7 @@ export function CompareTool({ cars, locale }: { cars: CarWithBrand[]; locale: Lo
                   {slots.map((s) => (
                     <TableCell key={s.key}>
                       <div className="relative aspect-[4/3] min-w-36 overflow-hidden rounded-md border border-border bg-muted">
-                        <Image src={s.variant.images?.[0] ?? s.car.images[0]} alt={`${localize(s.car.name, locale)} ${localize(s.variant.name, locale)}`} fill className="object-cover" sizes="180px" />
+                        <Image src={s.variant.images?.[0] ?? ""} alt={`${localize(s.car.name, locale)} ${localize(s.variant.name, locale)}`} fill className="object-cover" sizes="180px" />
                       </div>
                     </TableCell>
                   ))}

@@ -16,23 +16,12 @@ export const carProjection = `{
   "slug": slug.current,
   "brandId": brand->_id,
   "brand": brand->${brandProjection},
-  "images": select(count(images) > 0 => images[].asset->url, externalImageUrls),
-  "spinImages": select(count(spinImages) > 0 => spinImages[].asset->url, externalSpinImageUrls),
   shortDescription,
-  status,
-  "isNewArrival": coalesce(isNewArrival, false),
   bodyType,
-  wheelsExterior,
   "variants": variants[]{
     ...,
     "images": select(count(images) > 0 => images[].asset->url, externalImageUrls)
-  },
-  "sourceUrls": coalesce(sourceUrls, []),
-  officialPriceUrl,
-  sourceConfidence,
-  lastVerifiedAt,
-  lastUpdatedBy,
-  warranty
+  }
 }`;
 
 export const brandsQuery = `*[_type == "brand"] | order(name.en asc) ${brandProjection}`;

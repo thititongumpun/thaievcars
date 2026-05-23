@@ -12,7 +12,7 @@ function withBrand(modelId: string): CarWithBrand | undefined {
   const brand = brands.find((item) => item.id === model.brandId);
   if (!brand) return undefined;
 
-  return {...model, brand};
+  return {...model, brand} as CarWithBrand;
 }
 
 export async function getModels(): Promise<CarWithBrand[]> {
@@ -39,7 +39,7 @@ export async function getModelBySlug(slug: string): Promise<CarWithBrand | undef
 
 export async function getNewArrivalModels(): Promise<CarWithBrand[]> {
   const allModels = await getModels();
-  return allModels.filter((model) => model.isNewArrival);
+  return allModels.slice(0, 6);
 }
 
 export async function getRelatedModels(modelId: string): Promise<CarWithBrand[]> {

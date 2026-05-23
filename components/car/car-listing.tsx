@@ -11,7 +11,7 @@ import {Button} from "@/components/ui/button";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {Input} from "@/components/ui/input";
 import {NativeSelect} from "@/components/ui/native-select";
-import {formatThb, getStartingPrice, localize} from "@/lib/format";
+import {formatThb, getCarStatus, getCoverImages, getStartingPrice, localize} from "@/lib/format";
 import type {CarStatus, CarWithBrand, Drivetrain} from "@/lib/types/ev";
 
 type PriceFilter = "all" | "under700k" | "under1m" | "over1m";
@@ -49,7 +49,7 @@ export function CarListing({cars, locale}: {cars: CarWithBrand[]; locale: Locale
       if (range === "400" && (firstSpecs?.rangeKm ?? 0) < 400) return false;
       if (range === "450" && (firstSpecs?.rangeKm ?? 0) < 450) return false;
       if (drivetrain !== "all" && firstSpecs?.drivetrain !== drivetrain) return false;
-      if (status !== "all" && car.status !== status) return false;
+      if (status !== "all" && getCarStatus(car) !== status) return false;
 
       return true;
     });
@@ -175,20 +175,19 @@ function FilterSelect({
 function ListingCard({car, locale, eagerImage = false}: {car: CarWithBrand; locale: Locale; eagerImage?: boolean}) {
   const common = useTranslations("common");
   const startingPrice = getStartingPrice(car);
+  const status = getCarStatus(car);
+  const coverImage = getCoverImages(car)[0];
 
   return (
     <Link href={`/cars/${car.slug}`} className="group overflow-hidden rounded-lg border border-border bg-card shadow-subtle transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-panel">
       <div className="relative aspect-[16/9] bg-muted">
-        <Image src={car.images[0]} alt={localize(car.name, locale)} fill loading={eagerImage ? "eager" : "lazy"} className="object-cover transition duration-300 group-hover:scale-105" sizes="(min-width: 1280px) 25vw, (min-width: 768px) 50vw, 100vw" />
+        <Image src={coverImage} alt={localize(car.name, locale)} fill loading={eagerImage ? "eager" : "lazy"} className="object-cover transition duration-300 group-hover:scale-105" sizes="(min-width: 1280px) 25vw, (min-width: 768px) 50vw, 100vw" />
       </div>
       <div className="p-4">
         <div className="mb-3 flex flex-wrap gap-2">
           <Badge>{localize(car.brand.name, locale)}</Badge>
-          <Badge className={car.sourceConfidence === "official" ? "border-green-200 bg-green-50 text-green-800" : "border-amber-200 bg-amber-50 text-amber-900"}>
-            {car.sourceConfidence === "official" ? "Official" : "Verify"}
-          </Badge>
-          <Badge className={car.status === "on-sale" ? "border-green-200 bg-green-50 text-green-800" : ""}>
-            {car.status === "on-sale" ? common("onSale") : common("discontinued")}
+          <Badge className={status === "on-sale" ? "border-green-200 bg-green-50 text-green-800" : ""}>
+            {status === "on-sale" ? common("onSale") : common("discontinued")}
           </Badge>
         </div>
         <h3 className="font-semibold group-hover:text-green-700">{localize(car.name, locale)}</h3>

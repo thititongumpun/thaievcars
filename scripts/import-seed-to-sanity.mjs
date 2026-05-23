@@ -36,7 +36,7 @@ function stripKeys(value) {
   if (value && typeof value === "object") {
     return Object.fromEntries(
       Object.entries(value)
-        .filter(([key]) => key !== "id" && key !== "brandId" && key !== "images" && key !== "spinImages")
+        .filter(([key]) => !["id", "brandId", "images", "spinImages", "status", "isNewArrival", "wheelsExterior", "sourceUrls", "officialPriceUrl", "sourceConfidence", "lastVerifiedAt", "lastUpdatedBy", "warranty"].includes(key))
         .map(([key, item]) => [key, stripKeys(item)])
     );
   }
@@ -67,11 +67,10 @@ for (const model of models) {
     ...stripKeys(model),
     slug: slug(model.slug),
     brand: ref(brandId(model.brandId)),
-    externalImageUrls: model.images,
-    externalSpinImageUrls: model.spinImages,
     variants: model.variants.map((variant) => ({
       ...stripKeys(variant),
-      externalImageUrls: variant.images
+      externalImageUrls: variant.images ?? model.images,
+      wheelsExterior: variant.wheelsExterior ?? model.wheelsExterior
     }))
   });
 }

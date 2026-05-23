@@ -1,7 +1,6 @@
 import type {Brand, CarWithBrand, FAQCategory, FAQItem} from "@/lib/types/ev";
 import type {ReferenceSource} from "@/lib/data/references";
-
-const fallbackImage = "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=1400&q=80";
+import {fallbackCarImage} from "@/lib/format";
 
 function getYearFromDate(value: string | null | undefined) {
   if (!value) return undefined;
@@ -25,31 +24,23 @@ export function normalizeCar(car: CarWithBrand): CarWithBrand {
   return {
     ...car,
     brand: normalizeBrand(car.brand),
-    images: car.images?.length ? car.images : [fallbackImage],
-    spinImages: car.spinImages || [],
-    status: car.status || "on-sale",
     bodyType: car.bodyType || "suv",
-    sourceUrls: car.sourceUrls || [],
-    sourceConfidence: car.sourceConfidence || "needs-verification",
-    lastVerifiedAt: car.lastVerifiedAt || "2026-05-23",
-    lastUpdatedBy: car.lastUpdatedBy || "Sanity",
-    warranty: car.warranty || {vehicleYears: 0, vehicleKm: 0, batteryYears: 0, batteryKm: 0},
     variants: (car.variants || []).map((v) => ({
       ...v,
-      images: v.images?.length ? v.images : (car.images?.length ? car.images : [fallbackImage]),
+      images: v.images?.length ? v.images : [fallbackCarImage],
       detail: v.detail || {th: "", en: ""},
       saleStartYear: getVariantStartYear(v),
       saleEndYear: v.saleEndYear ?? null,
-      status: v.status || car.status || "on-sale",
+      status: v.status || "on-sale",
       pricingPeriods: v.pricingPeriods || [],
-      faqItems: v.faqItems || []
-    })),
-    wheelsExterior: car.wheelsExterior || {
-      wheelSizeInch: 0,
-      tireSize: "",
-      availableColors: [],
-      sunroofType: {th: "-", en: "-"}
-    }
+      faqItems: v.faqItems || [],
+      wheelsExterior: v.wheelsExterior || {
+        wheelSizeInch: 0,
+        tireSize: "",
+        availableColors: [],
+        sunroofType: {th: "-", en: "-"}
+      }
+    }))
   };
 }
 

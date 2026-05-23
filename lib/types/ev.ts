@@ -82,6 +82,7 @@ export type CarVariant = {
   saleStartYear?: number;
   saleEndYear?: number | null;
   status?: CarStatus;
+  wheelsExterior?: WheelsExterior;
   specs: CarSpecs;
   charging: Charging;
   pricingPeriods: PricingPeriod[];
@@ -93,25 +94,9 @@ export type CarModel = {
   name: LocalizedString;
   slug: string;
   brandId: string;
-  images: string[];
-  spinImages?: string[];
   shortDescription: LocalizedString;
-  status: CarStatus;
-  isNewArrival: boolean;
   bodyType: BodyType;
-  wheelsExterior: WheelsExterior;
   variants: CarVariant[];
-  sourceUrls: string[];
-  officialPriceUrl: string;
-  sourceConfidence: SourceConfidence;
-  lastVerifiedAt: string;
-  lastUpdatedBy: string;
-  warranty: {
-    vehicleYears: number;
-    vehicleKm: number;
-    batteryYears: number;
-    batteryKm: number;
-  };
 };
 
 export type FAQCategory = {

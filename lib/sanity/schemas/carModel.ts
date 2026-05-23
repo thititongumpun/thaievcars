@@ -14,35 +14,12 @@ export const carModel = defineType({
       validation: (rule) => rule.required()
     }),
     defineField({name: "brand", title: "Brand", type: "reference", to: [{type: "brand"}], validation: (rule) => rule.required()}),
-    defineField({name: "images", title: "Images", type: "array", of: [{type: "image", options: {hotspot: true}}]}),
-    defineField({name: "externalImageUrls", title: "External image URLs", type: "array", of: [{type: "url"}]}),
-    defineField({name: "spinImages", title: "360 spin images", type: "array", of: [{type: "image", options: {hotspot: true}}]}),
-    defineField({name: "externalSpinImageUrls", title: "External 360 spin image URLs", type: "array", of: [{type: "url"}]}),
     defineField({name: "shortDescription", title: "Short description", type: "localizedString"}),
-    defineField({
-      name: "status",
-      title: "Status",
-      type: "string",
-      options: {list: ["on-sale", "discontinued"]},
-      initialValue: "on-sale"
-    }),
-    defineField({name: "isNewArrival", title: "New arrival", type: "boolean", initialValue: false}),
     defineField({
       name: "bodyType",
       title: "Body type",
       type: "string",
       options: {list: ["hatchback", "sedan", "suv", "mpv", "pickup"]}
-    }),
-    defineField({
-      name: "wheelsExterior",
-      title: "Wheels and exterior",
-      type: "object",
-      fields: [
-        defineField({name: "wheelSizeInch", title: "Wheel size inch", type: "number"}),
-        defineField({name: "tireSize", title: "Tire size", type: "string"}),
-        defineField({name: "availableColors", title: "Colors", type: "array", of: [{type: "colorOption"}]}),
-        defineField({name: "sunroofType", title: "Sunroof type", type: "localizedString"})
-      ]
     }),
     defineField({
       name: "variants",
@@ -73,6 +50,17 @@ export const carModel = defineType({
               fields: [
                 defineField({name: "th", title: "Thai", type: "text", rows: 4}),
                 defineField({name: "en", title: "English", type: "text", rows: 4})
+              ]
+            }),
+            defineField({
+              name: "wheelsExterior",
+              title: "Wheels and exterior",
+              type: "object",
+              fields: [
+                defineField({name: "wheelSizeInch", title: "Wheel size inch", type: "number"}),
+                defineField({name: "tireSize", title: "Tire size", type: "string"}),
+                defineField({name: "availableColors", title: "Colors", type: "array", of: [{type: "colorOption"}]}),
+                defineField({name: "sunroofType", title: "Sunroof type", type: "localizedString"})
               ]
             }),
             defineField({
@@ -142,35 +130,13 @@ export const carModel = defineType({
           }
         }
       ]
-    }),
-    defineField({name: "sourceUrls", title: "Source URLs", type: "array", of: [{type: "url"}]}),
-    defineField({name: "officialPriceUrl", title: "Official price URL", type: "url"}),
-    defineField({
-      name: "sourceConfidence",
-      title: "Source confidence",
-      type: "string",
-      options: {list: ["official", "dealer", "community", "needs-verification"]},
-      initialValue: "needs-verification"
-    }),
-    defineField({name: "lastVerifiedAt", title: "Last verified at", type: "date"}),
-    defineField({name: "lastUpdatedBy", title: "Last updated by", type: "string"}),
-    defineField({
-      name: "warranty",
-      title: "Warranty",
-      type: "object",
-      fields: [
-        defineField({name: "vehicleYears", title: "Vehicle years", type: "number"}),
-        defineField({name: "vehicleKm", title: "Vehicle km", type: "number"}),
-        defineField({name: "batteryYears", title: "Battery years", type: "number"}),
-        defineField({name: "batteryKm", title: "Battery km", type: "number"})
-      ]
     })
   ],
   preview: {
     select: {
       title: "name.en",
       subtitle: "brand.name.en",
-      media: "images.0"
+      media: "variants.0.images.0"
     }
   }
 });

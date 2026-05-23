@@ -50,7 +50,6 @@ export default async function DataQualityPage({params}: {params: Promise<{locale
             <TableHeader>
               <TableRow className="bg-muted/60 hover:bg-muted/60">
                 <TableHead>Car</TableHead>
-                <TableHead>{t("lastChecked")}</TableHead>
                 <TableHead>{t("issues")}</TableHead>
               </TableRow>
             </TableHeader>
@@ -58,7 +57,6 @@ export default async function DataQualityPage({params}: {params: Promise<{locale
               {report.rows.map((row) => (
                 <TableRow key={row.car.id}>
                   <TableCell className="font-semibold">{localize(row.car.name, locale)}</TableCell>
-                  <TableCell className="text-muted-foreground">{row.car.lastVerifiedAt}</TableCell>
                   <TableCell>
                     <div className="flex flex-wrap gap-2">
                       {row.issues.map((issue) => (

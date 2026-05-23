@@ -1,5 +1,6 @@
 import {createClient} from "@sanity/client";
 import {brands, models, faqCategories, faqItems} from "../lib/data/seed";
+import type {CarVariant, PricingPeriod, VariantFAQItem} from "../lib/types/ev";
 
 const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
@@ -34,50 +35,42 @@ async function seed() {
 
   // Car models
   for (const model of models) {
+    const variants = model.variants as unknown as CarVariant[];
     tx.createOrReplace({
       _id: model.id,
       _type: "carModel",
       name: model.name,
       slug: {_type: "slug", current: model.slug},
       brand: {_type: "reference", _ref: model.brandId},
-      externalImageUrls: model.images,
       shortDescription: model.shortDescription,
-      status: model.status,
-      isNewArrival: model.isNewArrival,
       bodyType: model.bodyType,
-      wheelsExterior: {
-        ...model.wheelsExterior,
-        availableColors: model.wheelsExterior.availableColors.map((c, i) => ({
-          _key: key(c.hex || String(i)),
-          ...c
-        }))
-      },
-      variants: model.variants.map((v) => ({
+      variants: variants.map((v) => ({
         _key: key(v.id),
         id: v.id,
         name: v.name,
         saleStartYear: v.saleStartYear,
         saleEndYear: v.saleEndYear,
         status: v.status,
-        externalImageUrls: v.images,
+        externalImageUrls: v.images ?? model.images,
         detail: v.detail,
+        wheelsExterior: v.wheelsExterior ?? {
+          ...model.wheelsExterior,
+          availableColors: model.wheelsExterior.availableColors.map((c, i) => ({
+            _key: key(c.hex || String(i)),
+            ...c
+          }))
+        },
         specs: v.specs,
         charging: v.charging,
-        pricingPeriods: v.pricingPeriods.map((p, i) => ({
+        pricingPeriods: v.pricingPeriods.map((p: PricingPeriod, i: number) => ({
           _key: key(`${p.startDate ?? i}-${p.priceThb}`),
           ...p
         })),
-        faqItems: (v.faqItems || []).map((f, i) => ({
+        faqItems: (v.faqItems || []).map((f: VariantFAQItem, i: number) => ({
           _key: key(`faq-${i}`),
           ...f
         }))
-      })),
-      sourceUrls: model.sourceUrls,
-      officialPriceUrl: model.officialPriceUrl,
-      sourceConfidence: model.sourceConfidence,
-      lastVerifiedAt: model.lastVerifiedAt,
-      lastUpdatedBy: model.lastUpdatedBy,
-      warranty: model.warranty
+      }))
     });
   }
 

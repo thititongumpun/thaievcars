@@ -5,7 +5,7 @@ import Image from "next/image";
 import {useTranslations} from "next-intl";
 import type {Locale} from "@/i18n/routing";
 import {formatNumber, formatThb, getCurrentPricing, localize} from "@/lib/format";
-import type {CarVariant, CarWithBrand, VariantFAQItem, WheelsExterior} from "@/lib/types/ev";
+import type {CarVariant, CarWithBrand, VariantFAQItem} from "@/lib/types/ev";
 import {Card, CardContent} from "@/components/ui/card";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {cn} from "@/lib/utils";
@@ -83,7 +83,7 @@ export function CarTabs({car, locale}: {car: CarWithBrand; locale: Locale}) {
       <div className="py-6">
         {active === "variants" ? <VariantTable variants={variants} locale={locale} /> : null}
         {active !== "variants" && activeVariant ? <VariantGallery variant={activeVariant} locale={locale} /> : null}
-        {active === "specs" && activeVariant ? <SpecTable variant={activeVariant} wheelsExterior={car.wheelsExterior} locale={locale} /> : null}
+        {active === "specs" && activeVariant ? <SpecTable variant={activeVariant} locale={locale} /> : null}
         {active === "charging" && activeVariant ? <ChargingTable variant={activeVariant} /> : null}
         {active === "pricing" && activeVariant ? <PricingTimeline variant={activeVariant} locale={locale} /> : null}
         {active === "faq" && activeVariant ? <CarFAQ items={activeVariant.faqItems || []} locale={locale} /> : null}
@@ -179,11 +179,12 @@ function Row({label, value}: {label: string; value: React.ReactNode}) {
   );
 }
 
-function SpecTable({variant, wheelsExterior, locale}: {variant: CarVariant; wheelsExterior: WheelsExterior | undefined; locale: Locale}) {
+function SpecTable({variant, locale}: {variant: CarVariant; locale: Locale}) {
   const t = useTranslations("car");
   const common = useTranslations("common");
   const specs = variant.specs;
   const dimensions = specs?.dimensions;
+  const wheelsExterior = variant.wheelsExterior;
   const colors = wheelsExterior?.availableColors || [];
   return (
     <Card>

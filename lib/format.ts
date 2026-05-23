@@ -1,6 +1,8 @@
 import type {Locale} from "@/i18n/routing";
 import type {CarModel, LocalizedString, PricingPeriod} from "@/lib/types/ev";
 
+export const fallbackCarImage = "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=1400&q=80";
+
 export function localize(value: LocalizedString | null | undefined, locale: Locale) {
   if (!value) return "-";
   return value[locale] || value.th || value.en || "-";
@@ -40,4 +42,13 @@ export function getStartingPrice(car: CarModel | null | undefined) {
     .map((period) => period.priceThb);
 
   return prices.length ? Math.min(...prices) : undefined;
+}
+
+export function getCoverImages(car: CarModel | null | undefined) {
+  return car?.variants?.[0]?.images?.length ? car.variants[0].images : [fallbackCarImage];
+}
+
+export function getCarStatus(car: CarModel | null | undefined) {
+  const variants = car?.variants || [];
+  return variants.some((variant) => variant.status !== "discontinued") ? "on-sale" : "discontinued";
 }
