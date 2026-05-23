@@ -1,6 +1,7 @@
 "use client";
 
 import {useMemo, useState} from "react";
+import Image from "next/image";
 import {useTranslations} from "next-intl";
 import type {Locale} from "@/i18n/routing";
 import {formatNumber, formatThb, getCurrentPricing, localize} from "@/lib/format";
@@ -14,6 +15,13 @@ type TabId = "variants" | "specs" | "charging" | "pricing" | "faq";
 function unit(value: number | string | boolean | null | undefined, suffix = "") {
   if (value === null || value === undefined || value === "") return "-";
   return `${value}${suffix}`;
+}
+
+function formatSaleYears(variant: CarVariant) {
+  if (!variant.saleStartYear && !variant.saleEndYear) return "-";
+  if (variant.saleStartYear && variant.saleEndYear) return `${variant.saleStartYear} - ${variant.saleEndYear}`;
+  if (variant.saleStartYear) return `${variant.saleStartYear} - current`;
+  return `Until ${variant.saleEndYear}`;
 }
 
 export function CarTabs({car, locale}: {car: CarWithBrand; locale: Locale}) {
@@ -74,6 +82,7 @@ export function CarTabs({car, locale}: {car: CarWithBrand; locale: Locale}) {
 
       <div className="py-6">
         {active === "variants" ? <VariantTable variants={variants} locale={locale} /> : null}
+        {active !== "variants" && activeVariant ? <VariantGallery variant={activeVariant} locale={locale} /> : null}
         {active === "specs" && activeVariant ? <SpecTable variant={activeVariant} wheelsExterior={car.wheelsExterior} locale={locale} /> : null}
         {active === "charging" && activeVariant ? <ChargingTable variant={activeVariant} /> : null}
         {active === "pricing" && activeVariant ? <PricingTimeline variant={activeVariant} locale={locale} /> : null}
@@ -85,7 +94,11 @@ export function CarTabs({car, locale}: {car: CarWithBrand; locale: Locale}) {
 
 function VariantTable({variants, locale}: {variants: CarVariant[]; locale: Locale}) {
   const t = useTranslations("car");
+  const common = useTranslations("common");
   const rows = [
+    {label: t("variantDetail"), value: (variant: CarVariant) => localize(variant.detail, locale)},
+    {label: t("variantStatus"), value: (variant: CarVariant) => variant.status === "discontinued" ? common("discontinued") : common("onSale")},
+    {label: t("saleYears"), value: formatSaleYears},
     {label: t("currentPrice"), value: (variant: CarVariant) => {
       const price = getCurrentPricing(variant.pricingPeriods);
       return price ? formatThb(price.priceThb, locale) : "-";
@@ -113,11 +126,23 @@ function VariantTable({variants, locale}: {variants: CarVariant[]; locale: Local
             </TableRow>
           </TableHeader>
           <TableBody>
+            <TableRow>
+              <TableCell className="font-medium text-muted-foreground">{t("image")}</TableCell>
+              {variants.map((variant, index) => (
+                <TableCell key={variant.id ?? index}>
+                  {variant.images?.[0] ? (
+                    <div className="relative aspect-[4/3] min-w-36 overflow-hidden rounded-md border border-border bg-muted">
+                      <Image src={variant.images[0]} alt={localize(variant.name, locale)} fill className="object-cover" sizes="180px" />
+                    </div>
+                  ) : "-"}
+                </TableCell>
+              ))}
+            </TableRow>
             {rows.map((row) => (
               <TableRow key={row.label}>
                 <TableCell className="font-medium text-muted-foreground">{row.label}</TableCell>
                 {variants.map((variant, index) => (
-                  <TableCell key={variant.id ?? index} className="font-semibold">
+                  <TableCell key={variant.id ?? index} className="whitespace-pre-line font-semibold">
                     {row.value(variant)}
                   </TableCell>
                 ))}
@@ -127,6 +152,21 @@ function VariantTable({variants, locale}: {variants: CarVariant[]; locale: Local
         </Table>
       </div>
     </Card>
+  );
+}
+
+function VariantGallery({variant, locale}: {variant: CarVariant; locale: Locale}) {
+  const images = variant.images || [];
+  if (!images.length) return null;
+
+  return (
+    <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      {images.map((image, index) => (
+        <div key={`${variant.id}-${image}-${index}`} className="relative aspect-[4/3] overflow-hidden rounded-md border border-border bg-muted">
+          <Image src={image} alt={`${localize(variant.name, locale)} ${index + 1}`} fill className="object-cover" sizes="(min-width: 640px) 25vw, 50vw" />
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -141,6 +181,7 @@ function Row({label, value}: {label: string; value: React.ReactNode}) {
 
 function SpecTable({variant, wheelsExterior, locale}: {variant: CarVariant; wheelsExterior: WheelsExterior | undefined; locale: Locale}) {
   const t = useTranslations("car");
+  const common = useTranslations("common");
   const specs = variant.specs;
   const dimensions = specs?.dimensions;
   const colors = wheelsExterior?.availableColors || [];
@@ -148,6 +189,9 @@ function SpecTable({variant, wheelsExterior, locale}: {variant: CarVariant; whee
     <Card>
       <CardContent className="px-4 py-0">
         <dl>
+          <Row label={t("variantDetail")} value={<span className="whitespace-pre-line">{localize(variant.detail, locale)}</span>} />
+          <Row label={t("variantStatus")} value={variant.status === "discontinued" ? common("discontinued") : common("onSale")} />
+          <Row label={t("saleYears")} value={formatSaleYears(variant)} />
           <Row label={t("range")} value={unit(formatNumber(specs?.rangeKm, locale), " km")} />
           <Row label={t("battery")} value={unit(specs?.batteryKwh, " kWh")} />
           <Row label={t("batteryType")} value={unit(specs?.batteryType)} />

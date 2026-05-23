@@ -23,7 +23,8 @@ export async function getModels(): Promise<CarWithBrand[]> {
 
   return models
     .map((model) => withBrand(model.id))
-    .filter((model): model is CarWithBrand => Boolean(model));
+    .filter((model): model is CarWithBrand => Boolean(model))
+    .map(normalizeCar);
 }
 
 export async function getModelBySlug(slug: string): Promise<CarWithBrand | undefined> {
@@ -32,7 +33,8 @@ export async function getModelBySlug(slug: string): Promise<CarWithBrand | undef
     return normalizeCar(sanityModel);
   }
 
-  return withBrand(slug);
+  const model = withBrand(slug);
+  return model ? normalizeCar(model) : undefined;
 }
 
 export async function getNewArrivalModels(): Promise<CarWithBrand[]> {

@@ -75,7 +75,6 @@ export const models: CarModel[] = [
     name: {th: "BYD Dolphin", en: "BYD Dolphin"},
     slug: "byd-dolphin",
     brandId: "byd",
-    year: 2025,
     images: [
       "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=1400&q=80",
       "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=1400&q=80"
@@ -211,7 +210,6 @@ export const models: CarModel[] = [
     name: {th: "BYD Atto 3", en: "BYD Atto 3"},
     slug: "byd-atto-3",
     brandId: "byd",
-    year: 2025,
     images: [
       "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1400&q=80",
       "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=1400&q=80"
@@ -335,7 +333,6 @@ export const models: CarModel[] = [
     name: {th: "Tesla Model 3", en: "Tesla Model 3"},
     slug: "tesla-model-3",
     brandId: "tesla",
-    year: 2025,
     images: [
       "https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1400&q=80",
       "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1400&q=80"
@@ -472,7 +469,6 @@ export const models: CarModel[] = [
     name: {th: "Tesla Model Y", en: "Tesla Model Y"},
     slug: "tesla-model-y",
     brandId: "tesla",
-    year: 2025,
     images: [
       "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1400&q=80",
       "https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1400&q=80"
@@ -608,7 +604,6 @@ export const models: CarModel[] = [
     name: {th: "MG4", en: "MG4"},
     slug: "mg4",
     brandId: "mg",
-    year: 2025,
     images: [
       "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=1400&q=80",
       "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=1400&q=80"
@@ -732,7 +727,6 @@ export const models: CarModel[] = [
     name: {th: "ORA Good Cat", en: "ORA Good Cat"},
     slug: "ora-good-cat",
     brandId: "gwm",
-    year: 2024,
     images: [
       "https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1400&q=80",
       "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=1400&q=80"
@@ -809,7 +803,6 @@ export const models: CarModel[] = [
     name: {th: "NETA V-II", en: "NETA V-II"},
     slug: "neta-v-ii",
     brandId: "neta",
-    year: 2024,
     images: [
       "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=1400&q=80",
       "https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1400&q=80"

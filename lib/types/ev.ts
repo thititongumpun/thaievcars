@@ -77,6 +77,11 @@ export type VariantFAQItem = {
 export type CarVariant = {
   id: string;
   name: LocalizedString;
+  images?: string[];
+  detail?: LocalizedString;
+  saleStartYear?: number;
+  saleEndYear?: number | null;
+  status?: CarStatus;
   specs: CarSpecs;
   charging: Charging;
   pricingPeriods: PricingPeriod[];
@@ -88,7 +93,6 @@ export type CarModel = {
   name: LocalizedString;
   slug: string;
   brandId: string;
-  year: number;
   images: string[];
   spinImages?: string[];
   shortDescription: LocalizedString;

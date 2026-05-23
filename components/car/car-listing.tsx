@@ -137,8 +137,8 @@ export function CarListing({cars, locale}: {cars: CarWithBrand[]; locale: Locale
           </Card>
         ) : (
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {filteredCars.map((car) => (
-              <ListingCard key={car.id} car={car} locale={locale} />
+            {filteredCars.map((car, index) => (
+              <ListingCard key={car.id} car={car} locale={locale} eagerImage={index === 0} />
             ))}
           </div>
         )}
@@ -172,14 +172,14 @@ function FilterSelect({
   );
 }
 
-function ListingCard({car, locale}: {car: CarWithBrand; locale: Locale}) {
+function ListingCard({car, locale, eagerImage = false}: {car: CarWithBrand; locale: Locale; eagerImage?: boolean}) {
   const common = useTranslations("common");
   const startingPrice = getStartingPrice(car);
 
   return (
     <Link href={`/cars/${car.slug}`} className="group overflow-hidden rounded-lg border border-border bg-card shadow-subtle transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-panel">
       <div className="relative aspect-[16/9] bg-muted">
-        <Image src={car.images[0]} alt={localize(car.name, locale)} fill className="object-cover transition duration-300 group-hover:scale-105" sizes="(min-width: 1280px) 25vw, (min-width: 768px) 50vw, 100vw" />
+        <Image src={car.images[0]} alt={localize(car.name, locale)} fill loading={eagerImage ? "eager" : "lazy"} className="object-cover transition duration-300 group-hover:scale-105" sizes="(min-width: 1280px) 25vw, (min-width: 768px) 50vw, 100vw" />
       </div>
       <div className="p-4">
         <div className="mb-3 flex flex-wrap gap-2">

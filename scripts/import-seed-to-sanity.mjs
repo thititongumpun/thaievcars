@@ -68,7 +68,11 @@ for (const model of models) {
     slug: slug(model.slug),
     brand: ref(brandId(model.brandId)),
     externalImageUrls: model.images,
-    externalSpinImageUrls: model.spinImages
+    externalSpinImageUrls: model.spinImages,
+    variants: model.variants.map((variant) => ({
+      ...stripKeys(variant),
+      externalImageUrls: variant.images
+    }))
   });
 }
 

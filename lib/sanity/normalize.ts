@@ -3,6 +3,16 @@ import type {ReferenceSource} from "@/lib/data/references";
 
 const fallbackImage = "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=1400&q=80";
 
+function getYearFromDate(value: string | null | undefined) {
+  if (!value) return undefined;
+  const year = Number(value.slice(0, 4));
+  return Number.isFinite(year) ? year : undefined;
+}
+
+function getVariantStartYear(variant: CarWithBrand["variants"][number]) {
+  return variant.saleStartYear ?? getYearFromDate(variant.pricingPeriods?.[0]?.startDate);
+}
+
 export function normalizeBrand(brand: Brand): Brand {
   return {
     ...brand,
@@ -26,6 +36,11 @@ export function normalizeCar(car: CarWithBrand): CarWithBrand {
     warranty: car.warranty || {vehicleYears: 0, vehicleKm: 0, batteryYears: 0, batteryKm: 0},
     variants: (car.variants || []).map((v) => ({
       ...v,
+      images: v.images?.length ? v.images : (car.images?.length ? car.images : [fallbackImage]),
+      detail: v.detail || {th: "", en: ""},
+      saleStartYear: getVariantStartYear(v),
+      saleEndYear: v.saleEndYear ?? null,
+      status: v.status || car.status || "on-sale",
       pricingPeriods: v.pricingPeriods || [],
       faqItems: v.faqItems || []
     })),

@@ -9,7 +9,7 @@ import {Badge} from "@/components/ui/badge";
 import {Card, CardContent} from "@/components/ui/card";
 import {TrustBadge} from "./trust-badge";
 
-export async function CarCard({car, locale}: {car: CarWithBrand; locale: Locale}) {
+export async function CarCard({car, locale, eagerImage = false}: {car: CarWithBrand; locale: Locale; eagerImage?: boolean}) {
   const t = await getTranslations("common");
   const startingPrice = getStartingPrice(car);
 
@@ -17,7 +17,7 @@ export async function CarCard({car, locale}: {car: CarWithBrand; locale: Locale}
     <Link href={`/cars/${car.slug}`} className="group block">
       <Card className="h-full overflow-hidden transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-panel">
       <div className="relative aspect-[16/9] bg-muted">
-        <Image src={car.images[0]} alt={localize(car.name, locale)} fill className="object-cover transition duration-300 group-hover:scale-105" sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
+        <Image src={car.images[0]} alt={localize(car.name, locale)} fill loading={eagerImage ? "eager" : "lazy"} className="object-cover transition duration-300 group-hover:scale-105" sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
       </div>
       <CardContent className="p-5">
         <div className="mb-3 flex flex-wrap gap-2">

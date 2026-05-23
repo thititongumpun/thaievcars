@@ -95,8 +95,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: L
           <h2 className="text-2xl font-bold">{t("latestModels")}</h2>
         </div>
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {newModels.map((model) => (
-            <CarCard key={model.id} car={model} locale={locale} />
+          {newModels.map((model, index) => (
+            <CarCard key={model.id} car={model} locale={locale} eagerImage={index === 0} />
           ))}
         </div>
       </section>

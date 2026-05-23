@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import type { Locale } from "@/i18n/routing";
 import type { CarVariant, CarWithBrand } from "@/lib/types/ev";
@@ -23,6 +24,13 @@ type Slot = {
   car: CarWithBrand;
   variant: CarVariant;
 };
+
+function formatSaleYears(variant: CarVariant) {
+  if (!variant.saleStartYear && !variant.saleEndYear) return "-";
+  if (variant.saleStartYear && variant.saleEndYear) return `${variant.saleStartYear} - ${variant.saleEndYear}`;
+  if (variant.saleStartYear) return `${variant.saleStartYear} - current`;
+  return `Until ${variant.saleEndYear}`;
+}
 
 export function CompareTool({ cars, locale }: { cars: CarWithBrand[]; locale: Locale }) {
   const t = useTranslations("compare");
@@ -52,6 +60,9 @@ export function CompareTool({ cars, locale }: { cars: CarWithBrand[]; locale: Lo
   }
 
   const rows: { label: string; value: (s: Slot) => string }[] = [
+    { label: tCar("variantDetail"), value: (s) => localize(s.variant.detail, locale) },
+    { label: tCar("variantStatus"), value: (s) => s.variant.status === "discontinued" ? tCommon("discontinued") : tCommon("onSale") },
+    { label: tCar("saleYears"), value: (s) => formatSaleYears(s.variant) },
     {
       label: tCommon("currentPrice"),
       value: (s) => {
@@ -168,11 +179,21 @@ export function CompareTool({ cars, locale }: { cars: CarWithBrand[]; locale: Lo
                 </TableRow>
               </TableHeader>
               <TableBody>
+                <TableRow>
+                  <TableCell className="font-medium text-muted-foreground">{tCar("image")}</TableCell>
+                  {slots.map((s) => (
+                    <TableCell key={s.key}>
+                      <div className="relative aspect-[4/3] min-w-36 overflow-hidden rounded-md border border-border bg-muted">
+                        <Image src={s.variant.images?.[0] ?? s.car.images[0]} alt={`${localize(s.car.name, locale)} ${localize(s.variant.name, locale)}`} fill className="object-cover" sizes="180px" />
+                      </div>
+                    </TableCell>
+                  ))}
+                </TableRow>
                 {rows.map((row) => (
                   <TableRow key={row.label}>
                     <TableCell className="font-medium text-muted-foreground">{row.label}</TableCell>
                     {slots.map((s) => (
-                      <TableCell key={s.key} className="font-semibold">
+                      <TableCell key={s.key} className="whitespace-pre-line font-semibold">
                         {row.value(s)}
                       </TableCell>
                     ))}

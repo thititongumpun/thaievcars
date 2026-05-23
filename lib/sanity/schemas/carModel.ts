@@ -14,7 +14,6 @@ export const carModel = defineType({
       validation: (rule) => rule.required()
     }),
     defineField({name: "brand", title: "Brand", type: "reference", to: [{type: "brand"}], validation: (rule) => rule.required()}),
-    defineField({name: "year", title: "Year", type: "number", validation: (rule) => rule.required()}),
     defineField({name: "images", title: "Images", type: "array", of: [{type: "image", options: {hotspot: true}}]}),
     defineField({name: "externalImageUrls", title: "External image URLs", type: "array", of: [{type: "url"}]}),
     defineField({name: "spinImages", title: "360 spin images", type: "array", of: [{type: "image", options: {hotspot: true}}]}),
@@ -49,12 +48,33 @@ export const carModel = defineType({
       name: "variants",
       title: "Variants",
       type: "array",
+      validation: (rule) => rule.required().min(1),
       of: [
         {
           type: "object",
           fields: [
             defineField({name: "id", title: "Variant ID", type: "string", validation: (rule) => rule.required()}),
             defineField({name: "name", title: "Name", type: "localizedString", validation: (rule) => rule.required()}),
+            defineField({name: "saleStartYear", title: "Sale start year", type: "number"}),
+            defineField({name: "saleEndYear", title: "Sale end year", type: "number"}),
+            defineField({
+              name: "status",
+              title: "Variant status",
+              type: "string",
+              options: {list: ["on-sale", "discontinued"]},
+              initialValue: "on-sale"
+            }),
+            defineField({name: "images", title: "Variant images", type: "array", of: [{type: "image", options: {hotspot: true}}]}),
+            defineField({name: "externalImageUrls", title: "Variant external image URLs", type: "array", of: [{type: "url"}]}),
+            defineField({
+              name: "detail",
+              title: "Variant detail",
+              type: "object",
+              fields: [
+                defineField({name: "th", title: "Thai", type: "text", rows: 4}),
+                defineField({name: "en", title: "English", type: "text", rows: 4})
+              ]
+            }),
             defineField({
               name: "specs",
               title: "Specs",

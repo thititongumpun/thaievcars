@@ -1,10 +1,12 @@
-import type {Metadata} from "next";
+import type { Metadata } from "next";
 import "./globals.css";
-import {defaultSeo, getSiteUrl} from "@/lib/seo";
+import { defaultSeo, getSiteUrl } from "@/lib/seo";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
@@ -24,7 +26,7 @@ export const metadata: Metadata = {
     "MG EV",
     "เปรียบเทียบรถ EV"
   ],
-  authors: [{name: "ThaiEVCars"}],
+  authors: [{ name: "ThaiEVCars" }],
   creator: "ThaiEVCars",
   publisher: "ThaiEVCars",
   formatDetection: {
@@ -34,17 +36,19 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      {url: "/favicon.ico", sizes: "32x32"},
-      {url: "/icon.svg", type: "image/svg+xml"}
+      { url: "/favicon.ico", sizes: "32x32" },
+      { url: "/icon.svg", type: "image/svg+xml" }
     ],
     shortcut: "/favicon.ico"
   }
 };
 
-export default function RootLayout({children}: {children: React.ReactNode}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="th" className={cn("font-sans", geist.variable)} data-scroll-behavior="smooth">
       <body>{children}</body>
+      <Analytics />
+      <SpeedInsights />
     </html>
   );
 }

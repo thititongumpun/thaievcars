@@ -14,6 +14,23 @@ import {Car360Viewer} from "@/components/car/car-360-viewer";
 import {formatThb, getCurrentPricing, getPreviousPricing, getStartingPrice, localize} from "@/lib/format";
 import {getModelBySlug, getModels, getRelatedModels} from "@/lib/data/models";
 import {buildMetadata} from "@/lib/seo";
+import type {CarVariant} from "@/lib/types/ev";
+
+function formatVariantSaleYears(variants: CarVariant[]) {
+  const starts = variants.map((variant) => variant.saleStartYear).filter((year): year is number => typeof year === "number");
+  const ends = variants.map((variant) => variant.saleEndYear).filter((year): year is number => typeof year === "number");
+
+  if (!starts.length && !ends.length) return "";
+
+  const minStart = starts.length ? Math.min(...starts) : undefined;
+  const maxEnd = ends.length ? Math.max(...ends) : undefined;
+  const hasOnSale = variants.some((variant) => variant.status !== "discontinued");
+
+  if (minStart && hasOnSale) return `${minStart} - current`;
+  if (minStart && maxEnd) return `${minStart} - ${maxEnd}`;
+  if (minStart) return String(minStart);
+  return maxEnd ? `Until ${maxEnd}` : "";
+}
 
 export async function generateStaticParams() {
   const models = await getModels();
@@ -64,6 +81,7 @@ export default async function CarDetailPage({params}: {params: Promise<{locale: 
   const startingPrice = getStartingPrice(car);
   const previousPrice = getPreviousPricing(firstVariant?.pricingPeriods);
   const relatedCars = await getRelatedModels(car.slug);
+  const saleYears = formatVariantSaleYears(car.variants || []);
 
   return (
     <article className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -84,7 +102,7 @@ export default async function CarDetailPage({params}: {params: Promise<{locale: 
           <div className="mb-3 flex flex-wrap gap-2">
             <Badge>{localize(car.brand.name, locale)}</Badge>
             <TrustBadge confidence={car.sourceConfidence} />
-            <Badge>{car.year}</Badge>
+            {saleYears ? <Badge>{saleYears}</Badge> : null}
             <Badge className={car.status === "on-sale" ? "border-green-200 bg-green-50 text-green-800" : ""}>
               {car.status === "on-sale" ? t("onSale") : t("discontinued")}
             </Badge>

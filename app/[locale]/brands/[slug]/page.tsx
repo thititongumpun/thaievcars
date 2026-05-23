@@ -70,8 +70,8 @@ export default async function BrandDetailPage({params}: {params: Promise<{locale
         </CardContent>
       </Card>
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {cars.map((car) => (
-          <CarCard key={car.id} car={car} locale={locale} />
+        {cars.map((car, index) => (
+          <CarCard key={car.id} car={car} locale={locale} eagerImage={index === 0} />
         ))}
       </div>
     </section>

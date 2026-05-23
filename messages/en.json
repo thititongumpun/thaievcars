@@ -31,6 +31,10 @@
   "car": {
     "variants": "Variants",
     "variant": "Variant",
+    "image": "Image",
+    "variantDetail": "Variant detail",
+    "variantStatus": "Variant status",
+    "saleYears": "Sale years",
     "currentPrice": "Current price",
     "specs": "Specs",
     "charging": "Charging",

@@ -31,6 +31,10 @@
   "car": {
     "variants": "รุ่นย่อย",
     "variant": "รุ่นย่อย",
+    "image": "รูปภาพ",
+    "variantDetail": "รายละเอียดรุ่นย่อย",
+    "variantStatus": "สถานะรุ่นย่อย",
+    "saleYears": "ปีที่จำหน่าย",
     "currentPrice": "ราคาปัจจุบัน",
     "specs": "สเปค",
     "charging": "การชาร์จ",

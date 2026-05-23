@@ -16,7 +16,6 @@ export const carProjection = `{
   "slug": slug.current,
   "brandId": brand->_id,
   "brand": brand->${brandProjection},
-  year,
   "images": select(count(images) > 0 => images[].asset->url, externalImageUrls),
   "spinImages": select(count(spinImages) > 0 => spinImages[].asset->url, externalSpinImageUrls),
   shortDescription,
@@ -24,7 +23,10 @@ export const carProjection = `{
   "isNewArrival": coalesce(isNewArrival, false),
   bodyType,
   wheelsExterior,
-  variants,
+  "variants": variants[]{
+    ...,
+    "images": select(count(images) > 0 => images[].asset->url, externalImageUrls)
+  },
   "sourceUrls": coalesce(sourceUrls, []),
   officialPriceUrl,
   sourceConfidence,
