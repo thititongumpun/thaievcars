@@ -3,21 +3,23 @@ import {ArrowRight} from "lucide-react";
 import {getTranslations} from "next-intl/server";
 import type {Locale} from "@/i18n/routing";
 import {Link} from "@/i18n/navigation";
-import {formatThb, getCurrentPricing, localize} from "@/lib/format";
+import {formatThb, getStartingPrice, localize} from "@/lib/format";
 import type {CarWithBrand} from "@/lib/types/ev";
 import {Badge} from "@/components/ui/badge";
+import {Card, CardContent} from "@/components/ui/card";
 import {TrustBadge} from "./trust-badge";
 
 export async function CarCard({car, locale}: {car: CarWithBrand; locale: Locale}) {
   const t = await getTranslations("common");
-  const currentPrice = getCurrentPricing(car.pricingPeriods);
+  const startingPrice = getStartingPrice(car);
 
   return (
-    <Link href={`/cars/${car.slug}`} className="group block overflow-hidden rounded-lg border border-border bg-white shadow-subtle transition hover:-translate-y-0.5 hover:border-green-300">
+    <Link href={`/cars/${car.slug}`} className="group block">
+      <Card className="h-full overflow-hidden transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-panel">
       <div className="relative aspect-[16/9] bg-muted">
         <Image src={car.images[0]} alt={localize(car.name, locale)} fill className="object-cover transition duration-300 group-hover:scale-105" sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
       </div>
-      <div className="p-5">
+      <CardContent className="p-5">
         <div className="mb-3 flex flex-wrap gap-2">
           <Badge>{localize(car.brand.name, locale)}</Badge>
           <TrustBadge confidence={car.sourceConfidence} />
@@ -28,11 +30,12 @@ export async function CarCard({car, locale}: {car: CarWithBrand; locale: Locale}
         <div className="mt-4 flex items-end justify-between gap-3">
           <div>
             <p className="text-xs text-muted-foreground">{t("from")}</p>
-            <p className="font-semibold">{currentPrice ? formatThb(currentPrice.priceThb, locale) : "-"}</p>
+            <p className="font-semibold">{startingPrice ? formatThb(startingPrice, locale) : "-"}</p>
           </div>
           <ArrowRight className="h-5 w-5 text-muted-foreground transition group-hover:translate-x-1 group-hover:text-green-700" aria-hidden="true" />
         </div>
-      </div>
+      </CardContent>
+      </Card>
     </Link>
   );
 }

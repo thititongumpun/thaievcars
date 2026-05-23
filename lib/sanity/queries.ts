@@ -27,6 +27,7 @@ export const carProjection = `{
   charging,
   wheelsExterior,
   pricingPeriods,
+  variants,
   "sourceUrls": coalesce(sourceUrls, []),
   officialPriceUrl,
   sourceConfidence,

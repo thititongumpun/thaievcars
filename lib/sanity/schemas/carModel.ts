@@ -88,6 +88,69 @@ export const carModel = defineType({
       ]
     }),
     defineField({name: "pricingPeriods", title: "Pricing periods", type: "array", of: [{type: "pricingPeriod"}]}),
+    defineField({
+      name: "variants",
+      title: "Variants",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          fields: [
+            defineField({name: "id", title: "Variant ID", type: "string", validation: (rule) => rule.required()}),
+            defineField({name: "name", title: "Name", type: "localizedString", validation: (rule) => rule.required()}),
+            defineField({
+              name: "specs",
+              title: "Specs",
+              type: "object",
+              fields: [
+                defineField({name: "rangeKm", title: "Range km", type: "number"}),
+                defineField({name: "batteryKwh", title: "Battery kWh", type: "number"}),
+                defineField({name: "motorKw", title: "Motor kW", type: "number"}),
+                defineField({name: "torqueNm", title: "Torque Nm", type: "number"}),
+                defineField({name: "zeroToHundredSec", title: "0-100 sec", type: "number"}),
+                defineField({name: "topSpeedKmh", title: "Top speed km/h", type: "number"}),
+                defineField({name: "drivetrain", title: "Drivetrain", type: "string", options: {list: ["FWD", "RWD", "AWD"]}}),
+                defineField({name: "seating", title: "Seats", type: "number"}),
+                defineField({name: "cargoL", title: "Cargo L", type: "number"}),
+                defineField({name: "weightKg", title: "Weight kg", type: "number"}),
+                defineField({
+                  name: "dimensions",
+                  title: "Dimensions",
+                  type: "object",
+                  fields: [
+                    defineField({name: "lengthMm", title: "Length mm", type: "number"}),
+                    defineField({name: "widthMm", title: "Width mm", type: "number"}),
+                    defineField({name: "heightMm", title: "Height mm", type: "number"})
+                  ]
+                }),
+                defineField({name: "ipRating", title: "IP rating", type: "string"})
+              ]
+            }),
+            defineField({
+              name: "charging",
+              title: "Charging",
+              type: "object",
+              fields: [
+                defineField({name: "acMaxKw", title: "AC max kW", type: "number"}),
+                defineField({name: "acChargeTimeH", title: "AC charge time hours", type: "number"}),
+                defineField({name: "dcMaxKw", title: "DC max kW", type: "number"}),
+                defineField({name: "dcTenToEightyMin", title: "DC 10-80 min", type: "number"}),
+                defineField({name: "connectorTypes", title: "Connector types", type: "array", of: [{type: "string"}]}),
+                defineField({name: "v2lSupport", title: "V2L support", type: "boolean"}),
+                defineField({name: "homeChargerRequired", title: "Home charger required", type: "boolean"})
+              ]
+            }),
+            defineField({name: "pricingPeriods", title: "Pricing periods", type: "array", of: [{type: "pricingPeriod"}]})
+          ],
+          preview: {
+            select: {
+              title: "name.en",
+              subtitle: "id"
+            }
+          }
+        }
+      ]
+    }),
     defineField({name: "sourceUrls", title: "Source URLs", type: "array", of: [{type: "url"}]}),
     defineField({name: "officialPriceUrl", title: "Official price URL", type: "url"}),
     defineField({

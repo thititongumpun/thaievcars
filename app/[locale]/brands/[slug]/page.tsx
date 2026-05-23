@@ -5,6 +5,7 @@ import type {Metadata} from "next";
 import type {Locale} from "@/i18n/routing";
 import {CarCard} from "@/components/car/car-card";
 import {Badge} from "@/components/ui/badge";
+import {Card, CardContent} from "@/components/ui/card";
 import {getBrandBySlug, getModelsByBrandSlug} from "@/lib/data/brands";
 import {getModels} from "@/lib/data/models";
 import {localize} from "@/lib/format";
@@ -50,7 +51,8 @@ export default async function BrandDetailPage({params}: {params: Promise<{locale
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mb-8 rounded-lg border border-border bg-white p-6">
+      <Card className="mb-8 shadow-panel">
+        <CardContent className="p-6">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
           <div className="flex h-20 w-20 items-center justify-center rounded-md bg-slate-950 text-sm font-bold text-white">
             {brand.logoUrl ? (
@@ -65,7 +67,8 @@ export default async function BrandDetailPage({params}: {params: Promise<{locale
             <p className="mt-3 max-w-3xl leading-7 text-muted-foreground">{localize(brand.description, locale)}</p>
           </div>
         </div>
-      </div>
+        </CardContent>
+      </Card>
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {cars.map((car) => (
           <CarCard key={car.id} car={car} locale={locale} />

@@ -2,7 +2,9 @@ import {ExternalLink} from "lucide-react";
 import {getTranslations, setRequestLocale} from "next-intl/server";
 import type {Metadata} from "next";
 import type {Locale} from "@/i18n/routing";
+import {Alert} from "@/components/ui/alert";
 import {Badge} from "@/components/ui/badge";
+import {Card, CardContent} from "@/components/ui/card";
 import {getReferenceSources, type ReferenceSource} from "@/lib/data/references";
 import {localize} from "@/lib/format";
 import {buildMetadata} from "@/lib/seo";
@@ -32,9 +34,9 @@ export default async function ReferencesPage({params}: {params: Promise<{locale:
         <p className="mt-2 max-w-3xl text-muted-foreground">{t("subtitle")}</p>
       </div>
 
-      <div className="mb-8 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
+      <Alert className="mb-8 border-amber-200 bg-amber-50 text-amber-950">
         {t("disclaimer")}
-      </div>
+      </Alert>
 
       <ReferenceGroup title={t("official")} sources={official} locale={locale} checkedLabel={t("checked")} openLabel={t("open")} />
       <ReferenceGroup title={t("tools")} sources={tools} locale={locale} checkedLabel={t("checked")} openLabel={t("open")} className="mt-10" />
@@ -62,7 +64,8 @@ function ReferenceGroup({
       <h2 className="mb-4 text-2xl font-bold">{title}</h2>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {sources.map((source) => (
-          <article key={source.id} className="flex min-h-56 flex-col rounded-lg border border-border bg-white p-5 shadow-subtle">
+          <Card key={source.id} className="flex min-h-56 flex-col transition hover:border-primary/40 hover:shadow-panel">
+            <CardContent className="flex flex-1 flex-col p-5">
             <div className="mb-3 flex flex-wrap gap-2">
               <Badge>{new URL(source.url).hostname}</Badge>
               <Badge>{checkedLabel}: {source.checkedAt}</Badge>
@@ -78,7 +81,8 @@ function ReferenceGroup({
               {openLabel}
               <ExternalLink className="h-4 w-4" aria-hidden="true" />
             </a>
-          </article>
+            </CardContent>
+          </Card>
         ))}
       </div>
     </section>

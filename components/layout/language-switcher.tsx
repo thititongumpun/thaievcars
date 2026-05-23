@@ -15,7 +15,7 @@ export function LanguageSwitcher() {
   const pathname = usePathname();
 
   return (
-    <div className="inline-grid grid-cols-2 overflow-hidden rounded-md border border-border bg-white text-xs font-semibold">
+    <div className="inline-grid grid-cols-2 overflow-hidden rounded-md border border-border bg-card text-xs font-semibold shadow-subtle">
       {locales.map((item) => (
         <Link
           key={item.value}

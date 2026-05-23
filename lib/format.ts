@@ -1,5 +1,5 @@
 import type {Locale} from "@/i18n/routing";
-import type {LocalizedString, PricingPeriod} from "@/lib/types/ev";
+import type {CarModel, LocalizedString, PricingPeriod} from "@/lib/types/ev";
 
 export function localize(value: LocalizedString, locale: Locale) {
   return value[locale] || value.th;
@@ -25,4 +25,12 @@ export function getPreviousPricing(periods: PricingPeriod[]) {
   const currentIndex = periods.findIndex((period) => period.endDate === null);
   const index = currentIndex === -1 ? periods.length - 1 : currentIndex;
   return index > 0 ? periods[index - 1] : undefined;
+}
+
+export function getStartingPrice(car: CarModel) {
+  const prices = [getCurrentPricing(car.pricingPeriods), ...(car.variants || []).map((variant) => getCurrentPricing(variant.pricingPeriods))]
+    .filter((period): period is PricingPeriod => Boolean(period))
+    .map((period) => period.priceThb);
+
+  return prices.length ? Math.min(...prices) : undefined;
 }

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import {Rotate3D} from "lucide-react";
 import {useMemo, useState} from "react";
+import {Card, CardContent} from "@/components/ui/card";
 
 export function Car360Viewer({images, alt}: {images: string[]; alt: string}) {
   const frames = useMemo(() => images.filter(Boolean), [images]);
@@ -22,7 +23,8 @@ export function Car360Viewer({images, alt}: {images: string[]; alt: string}) {
   }
 
   return (
-    <section className="mt-8 rounded-lg border border-border bg-white p-4 shadow-subtle">
+    <Card className="mt-8">
+      <CardContent className="p-4">
       <div className="mb-3 flex items-center justify-between gap-3">
         <h2 className="flex items-center gap-2 text-lg font-bold">
           <Rotate3D className="h-5 w-5 text-green-700" aria-hidden="true" />
@@ -59,6 +61,7 @@ export function Car360Viewer({images, alt}: {images: string[]; alt: string}) {
         onChange={(event) => setFrame(Number(event.target.value))}
         aria-label="360 frame"
       />
-    </section>
+      </CardContent>
+    </Card>
   );
 }

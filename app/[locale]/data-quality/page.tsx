@@ -2,6 +2,8 @@ import {setRequestLocale, getTranslations} from "next-intl/server";
 import type {Metadata} from "next";
 import type {Locale} from "@/i18n/routing";
 import {Badge} from "@/components/ui/badge";
+import {Card, CardContent} from "@/components/ui/card";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {getDataQualityReport} from "@/lib/data/quality";
 import {localize} from "@/lib/format";
 import {buildMetadata} from "@/lib/seo";
@@ -38,23 +40,26 @@ export default async function DataQualityPage({params}: {params: Promise<{locale
       </div>
 
       {report.rows.length === 0 ? (
-        <div className="rounded-lg border border-green-200 bg-green-50 p-6 text-green-900">{t("allGood")}</div>
+        <Card className="border-green-200 bg-green-50 text-green-900">
+          <CardContent className="p-6">{t("allGood")}</CardContent>
+        </Card>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-border bg-white">
-          <table className="min-w-[760px] w-full border-collapse text-sm">
-            <thead>
-              <tr className="border-b border-border bg-muted/60">
-                <th className="p-4 text-left font-semibold">Car</th>
-                <th className="p-4 text-left font-semibold">{t("lastChecked")}</th>
-                <th className="p-4 text-left font-semibold">{t("issues")}</th>
-              </tr>
-            </thead>
-            <tbody>
+        <Card className="overflow-hidden">
+          <div className="overflow-x-auto">
+          <Table className="min-w-[760px]">
+            <TableHeader>
+              <TableRow className="bg-muted/60 hover:bg-muted/60">
+                <TableHead>Car</TableHead>
+                <TableHead>{t("lastChecked")}</TableHead>
+                <TableHead>{t("issues")}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {report.rows.map((row) => (
-                <tr key={row.car.id} className="border-b border-border last:border-0">
-                  <td className="p-4 font-semibold">{localize(row.car.name, locale)}</td>
-                  <td className="p-4 text-muted-foreground">{row.car.lastVerifiedAt}</td>
-                  <td className="p-4">
+                <TableRow key={row.car.id}>
+                  <TableCell className="font-semibold">{localize(row.car.name, locale)}</TableCell>
+                  <TableCell className="text-muted-foreground">{row.car.lastVerifiedAt}</TableCell>
+                  <TableCell>
                     <div className="flex flex-wrap gap-2">
                       {row.issues.map((issue) => (
                         <Badge key={issue} className="border-amber-200 bg-amber-50 text-amber-900">
@@ -62,12 +67,13 @@ export default async function DataQualityPage({params}: {params: Promise<{locale
                         </Badge>
                       ))}
                     </div>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TableBody>
+          </Table>
+          </div>
+        </Card>
       )}
     </section>
   );
@@ -75,9 +81,11 @@ export default async function DataQualityPage({params}: {params: Promise<{locale
 
 function Metric({label, value}: {label: string; value: number}) {
   return (
-    <div className="rounded-lg border border-border bg-white p-5 shadow-subtle">
+    <Card>
+      <CardContent className="p-5">
       <p className="text-3xl font-bold">{value}</p>
       <p className="mt-1 text-sm text-muted-foreground">{label}</p>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

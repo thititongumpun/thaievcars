@@ -29,6 +29,9 @@
     "relatedCars": "รถรุ่นอื่นจากแบรนด์เดียวกัน"
   },
   "car": {
+    "variants": "รุ่นย่อย",
+    "variant": "รุ่นย่อย",
+    "currentPrice": "ราคาปัจจุบัน",
     "specs": "สเปค",
     "charging": "การชาร์จ",
     "pricing": "ราคา",

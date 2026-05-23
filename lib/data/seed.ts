@@ -137,6 +137,82 @@ export const models: CarModel[] = [
         notes: {th: "ตัวอย่างข้อมูลสำหรับ Phase 1", en: "Sample Phase 1 data"}
       }
     ],
+    variants: [
+      {
+        id: "byd-dolphin-standard",
+        name: {th: "Standard Range", en: "Standard Range"},
+        specs: {
+          rangeKm: 410,
+          batteryKwh: 44.9,
+          motorKw: 70,
+          torqueNm: 180,
+          zeroToHundredSec: 12.3,
+          topSpeedKmh: 150,
+          drivetrain: "FWD",
+          seating: 5,
+          cargoL: 345,
+          weightKg: 1405,
+          dimensions: {lengthMm: 4290, widthMm: 1770, heightMm: 1570},
+          ipRating: "IP67"
+        },
+        charging: {
+          acMaxKw: 7,
+          acChargeTimeH: 7.5,
+          dcMaxKw: 60,
+          dcTenToEightyMin: 40,
+          connectorTypes: ["Type 2", "CCS2"],
+          v2lSupport: true,
+          homeChargerRequired: false
+        },
+        pricingPeriods: [
+          {
+            label: {th: "โปรโมชันปัจจุบัน", en: "Current promotion"},
+            startDate: "2025-01-01",
+            endDate: null,
+            priceThb: 599999,
+            discountThb: 100000,
+            notes: {th: "ตัวอย่างข้อมูลสำหรับ Phase 1", en: "Sample Phase 1 data"}
+          }
+        ]
+      },
+      {
+        id: "byd-dolphin-extended",
+        name: {th: "Extended Range", en: "Extended Range"},
+        specs: {
+          rangeKm: 490,
+          batteryKwh: 60.5,
+          motorKw: 150,
+          torqueNm: 310,
+          zeroToHundredSec: 7.0,
+          topSpeedKmh: 160,
+          drivetrain: "FWD",
+          seating: 5,
+          cargoL: 345,
+          weightKg: 1658,
+          dimensions: {lengthMm: 4290, widthMm: 1770, heightMm: 1570},
+          ipRating: "IP67"
+        },
+        charging: {
+          acMaxKw: 7,
+          acChargeTimeH: 9.5,
+          dcMaxKw: 80,
+          dcTenToEightyMin: 38,
+          connectorTypes: ["Type 2", "CCS2"],
+          v2lSupport: true,
+          homeChargerRequired: false
+        },
+        pricingPeriods: [
+          {
+            label: {th: "โปรโมชันปัจจุบัน", en: "Current promotion"},
+            startDate: "2025-01-01",
+            endDate: null,
+            priceThb: 699999,
+            discountThb: 90000,
+            notes: {th: "ตัวอย่างข้อมูลรุ่นย่อย", en: "Sample variant data"}
+          }
+        ]
+      }
+    ],
     sourceUrls: ["https://www.reverautomotive.com/"],
     officialPriceUrl: "https://www.reverautomotive.com/",
     sourceConfidence: "official",
@@ -210,6 +286,82 @@ export const models: CarModel[] = [
         priceThb: 999900,
         discountThb: 200000,
         notes: {th: "ข้อมูลตัวอย่างสำหรับแสดงประวัติราคา", en: "Sample pricing history"}
+      }
+    ],
+    variants: [
+      {
+        id: "byd-atto-3-standard",
+        name: {th: "Standard Range", en: "Standard Range"},
+        specs: {
+          rangeKm: 410,
+          batteryKwh: 50.3,
+          motorKw: 150,
+          torqueNm: 310,
+          zeroToHundredSec: 7.9,
+          topSpeedKmh: 160,
+          drivetrain: "FWD",
+          seating: 5,
+          cargoL: 440,
+          weightKg: 1680,
+          dimensions: {lengthMm: 4455, widthMm: 1875, heightMm: 1615},
+          ipRating: "IP67"
+        },
+        charging: {
+          acMaxKw: 7,
+          acChargeTimeH: 8,
+          dcMaxKw: 70,
+          dcTenToEightyMin: 44,
+          connectorTypes: ["Type 2", "CCS2"],
+          v2lSupport: true,
+          homeChargerRequired: false
+        },
+        pricingPeriods: [
+          {
+            label: {th: "ราคาปัจจุบัน", en: "Current price"},
+            startDate: "2025-01-01",
+            endDate: null,
+            priceThb: 899900,
+            discountThb: 180000,
+            notes: {th: "ข้อมูลตัวอย่างรุ่นย่อย", en: "Sample variant data"}
+          }
+        ]
+      },
+      {
+        id: "byd-atto-3-extended",
+        name: {th: "Extended Range", en: "Extended Range"},
+        specs: {
+          rangeKm: 480,
+          batteryKwh: 60.5,
+          motorKw: 150,
+          torqueNm: 310,
+          zeroToHundredSec: 7.3,
+          topSpeedKmh: 160,
+          drivetrain: "FWD",
+          seating: 5,
+          cargoL: 440,
+          weightKg: 1750,
+          dimensions: {lengthMm: 4455, widthMm: 1875, heightMm: 1615},
+          ipRating: "IP67"
+        },
+        charging: {
+          acMaxKw: 7,
+          acChargeTimeH: 9.5,
+          dcMaxKw: 80,
+          dcTenToEightyMin: 44,
+          connectorTypes: ["Type 2", "CCS2"],
+          v2lSupport: true,
+          homeChargerRequired: false
+        },
+        pricingPeriods: [
+          {
+            label: {th: "ราคาปัจจุบัน", en: "Current price"},
+            startDate: "2025-01-01",
+            endDate: null,
+            priceThb: 999900,
+            discountThb: 200000,
+            notes: {th: "ข้อมูลตัวอย่างรุ่นย่อย", en: "Sample variant data"}
+          }
+        ]
       }
     ],
     sourceUrls: ["https://www.reverautomotive.com/"],

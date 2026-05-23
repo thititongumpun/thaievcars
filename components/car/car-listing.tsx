@@ -1,14 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import {Search, SlidersHorizontal, X} from "lucide-react";
+import {SlidersHorizontal, X} from "lucide-react";
 import {useMemo, useState} from "react";
 import {useTranslations} from "next-intl";
 import type {Locale} from "@/i18n/routing";
 import {Link} from "@/i18n/navigation";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
-import {formatThb, getCurrentPricing, localize} from "@/lib/format";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {Input} from "@/components/ui/input";
+import {NativeSelect} from "@/components/ui/native-select";
+import {formatThb, getStartingPrice, localize} from "@/lib/format";
 import type {CarStatus, CarWithBrand, Drivetrain} from "@/lib/types/ev";
 
 type PriceFilter = "all" | "under700k" | "under1m" | "over1m";
@@ -34,7 +37,7 @@ export function CarListing({cars, locale}: {cars: CarWithBrand[]; locale: Locale
     const normalizedQuery = query.trim().toLowerCase();
 
     return cars.filter((car) => {
-      const currentPrice = getCurrentPricing(car.pricingPeriods)?.priceThb ?? 0;
+      const currentPrice = getStartingPrice(car) ?? 0;
       const searchable = `${localize(car.name, locale)} ${localize(car.brand.name, locale)}`.toLowerCase();
 
       if (normalizedQuery && !searchable.includes(normalizedQuery)) return false;
@@ -62,20 +65,20 @@ export function CarListing({cars, locale}: {cars: CarWithBrand[]; locale: Locale
 
   return (
     <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
-      <aside className="h-fit rounded-lg border border-border bg-white p-4 shadow-subtle lg:sticky lg:top-24">
-        <div className="mb-4 flex items-center gap-2">
+      <Card className="h-fit lg:sticky lg:top-24">
+        <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-base">
           <SlidersHorizontal className="h-4 w-4 text-green-700" aria-hidden="true" />
-          <h2 className="font-semibold">Filters</h2>
-        </div>
-        <div className="space-y-4">
+          Filters
+        </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
           <label className="block">
             <span className="text-sm font-medium">{t("search")}</span>
             <div className="relative mt-2">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
-              <input
+              <Input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                className="h-10 w-full rounded-md border border-border bg-white pl-9 pr-3 text-sm outline-none focus:border-green-500"
                 placeholder="BYD, Tesla, MG"
               />
             </div>
@@ -120,15 +123,17 @@ export function CarListing({cars, locale}: {cars: CarWithBrand[]; locale: Locale
             <X className="h-4 w-4" aria-hidden="true" />
             {t("reset")}
           </Button>
-        </div>
-      </aside>
+        </CardContent>
+      </Card>
 
       <section>
         <div className="mb-4 flex items-center justify-between gap-4">
           <p className="text-sm font-medium text-muted-foreground">{t("resultCount", {count: filteredCars.length})}</p>
         </div>
         {filteredCars.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border bg-white p-8 text-center text-muted-foreground">{t("empty")}</div>
+          <Card className="border-dashed">
+            <CardContent className="p-8 text-center text-muted-foreground">{t("empty")}</CardContent>
+          </Card>
         ) : (
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {filteredCars.map((car) => (
@@ -155,23 +160,23 @@ function FilterSelect({
   return (
     <label className="block">
       <span className="text-sm font-medium">{label}</span>
-      <select
+      <NativeSelect
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-2 h-10 w-full rounded-md border border-border bg-white px-3 text-sm outline-none focus:border-green-500"
+        className="mt-2 w-full"
       >
         {children}
-      </select>
+      </NativeSelect>
     </label>
   );
 }
 
 function ListingCard({car, locale}: {car: CarWithBrand; locale: Locale}) {
   const common = useTranslations("common");
-  const currentPrice = getCurrentPricing(car.pricingPeriods);
+  const startingPrice = getStartingPrice(car);
 
   return (
-    <Link href={`/cars/${car.slug}`} className="group overflow-hidden rounded-lg border border-border bg-white shadow-subtle transition hover:-translate-y-0.5 hover:border-green-300">
+    <Link href={`/cars/${car.slug}`} className="group overflow-hidden rounded-lg border border-border bg-card shadow-subtle transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-panel">
       <div className="relative aspect-[16/9] bg-muted">
         <Image src={car.images[0]} alt={localize(car.name, locale)} fill className="object-cover transition duration-300 group-hover:scale-105" sizes="(min-width: 1280px) 25vw, (min-width: 768px) 50vw, 100vw" />
       </div>
@@ -190,7 +195,7 @@ function ListingCard({car, locale}: {car: CarWithBrand; locale: Locale}) {
           <Metric label="Range" value={`${car.specs.rangeKm} km`} />
           <Metric label="Battery" value={`${car.specs.batteryKwh} kWh`} />
           <Metric label="Drive" value={car.specs.drivetrain} />
-          <Metric label="Price" value={currentPrice ? formatThb(currentPrice.priceThb, locale) : "-"} />
+          <Metric label="Price" value={startingPrice ? formatThb(startingPrice, locale) : "-"} />
         </div>
       </div>
     </Link>

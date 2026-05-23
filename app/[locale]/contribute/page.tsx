@@ -2,6 +2,7 @@ import {Mail} from "lucide-react";
 import {getTranslations, setRequestLocale} from "next-intl/server";
 import type {Metadata} from "next";
 import type {Locale} from "@/i18n/routing";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {buildMetadata} from "@/lib/seo";
 
 const contactEmail = "updates@thaievcars.local";
@@ -58,7 +59,8 @@ export default async function ContributePage({params}: {params: Promise<{locale:
         />
       </div>
 
-      <div className="mt-8 rounded-lg border border-border bg-white p-6 shadow-subtle">
+      <Card className="mt-8 shadow-panel">
+        <CardContent className="p-6">
         <h2 className="text-xl font-bold">{t("send")}</h2>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
           Send the model name, proposed update, source link, and date checked. This is a temporary workflow until the CMS/community features are added.
@@ -70,22 +72,27 @@ export default async function ContributePage({params}: {params: Promise<{locale:
           <Mail className="h-4 w-4" aria-hidden="true" />
           {contactEmail}
         </a>
-      </div>
+        </CardContent>
+      </Card>
     </section>
   );
 }
 
 function InfoPanel({title, items}: {title: string; items: string[]}) {
   return (
-    <section className="rounded-lg border border-border bg-white p-5 shadow-subtle">
-      <h2 className="text-xl font-bold">{title}</h2>
-      <ul className="mt-4 space-y-3 text-sm leading-6 text-muted-foreground">
+    <Card>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+      <ul className="space-y-3 text-sm leading-6 text-muted-foreground">
         {items.map((item) => (
           <li key={item} className="border-b border-border pb-3 last:border-0 last:pb-0">
             {item}
           </li>
         ))}
       </ul>
-    </section>
+      </CardContent>
+    </Card>
   );
 }

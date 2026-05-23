@@ -3,23 +3,26 @@
 import {useMemo, useState} from "react";
 import {useTranslations} from "next-intl";
 import type {Locale} from "@/i18n/routing";
-import {formatNumber, formatThb, localize} from "@/lib/format";
-import type {CarWithBrand, FAQItem} from "@/lib/types/ev";
+import {formatNumber, formatThb, getCurrentPricing, localize} from "@/lib/format";
+import type {CarVariant, CarWithBrand, FAQItem} from "@/lib/types/ev";
+import {Card, CardContent} from "@/components/ui/card";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {cn} from "@/lib/utils";
 
-type TabId = "specs" | "charging" | "pricing" | "faq";
+type TabId = "variants" | "specs" | "charging" | "pricing" | "faq";
 
 export function CarTabs({car, locale, faqItems}: {car: CarWithBrand; locale: Locale; faqItems: FAQItem[]}) {
   const t = useTranslations("car");
-  const [active, setActive] = useState<TabId>("specs");
+  const [active, setActive] = useState<TabId>(() => (car.variants?.length ? "variants" : "specs"));
   const tabs = useMemo(
     () => [
+      ...(car.variants?.length ? [{id: "variants" as const, label: t("variants")}] : []),
       {id: "specs" as const, label: t("specs")},
       {id: "charging" as const, label: t("charging")},
       {id: "pricing" as const, label: t("pricing")},
       {id: "faq" as const, label: t("faq")}
     ],
-    [t]
+    [car.variants?.length, t]
   );
 
   return (
@@ -41,12 +44,62 @@ export function CarTabs({car, locale, faqItems}: {car: CarWithBrand; locale: Loc
       </div>
 
       <div className="py-6">
+        {active === "variants" ? <VariantTable variants={car.variants || []} locale={locale} /> : null}
         {active === "specs" ? <SpecTable car={car} locale={locale} /> : null}
         {active === "charging" ? <ChargingTable car={car} /> : null}
         {active === "pricing" ? <PricingTimeline car={car} locale={locale} /> : null}
         {active === "faq" ? <CarFAQ items={faqItems} locale={locale} /> : null}
       </div>
     </section>
+  );
+}
+
+function VariantTable({variants, locale}: {variants: CarVariant[]; locale: Locale}) {
+  const t = useTranslations("car");
+  const rows = [
+    {label: t("currentPrice"), value: (variant: CarVariant) => {
+      const price = getCurrentPricing(variant.pricingPeriods);
+      return price ? formatThb(price.priceThb, locale) : "-";
+    }},
+    {label: t("range"), value: (variant: CarVariant) => `${formatNumber(variant.specs.rangeKm, locale)} km`},
+    {label: t("battery"), value: (variant: CarVariant) => `${variant.specs.batteryKwh} kWh`},
+    {label: t("power"), value: (variant: CarVariant) => `${variant.specs.motorKw} kW`},
+    {label: t("torque"), value: (variant: CarVariant) => `${formatNumber(variant.specs.torqueNm, locale)} Nm`},
+    {label: t("acceleration"), value: (variant: CarVariant) => `${variant.specs.zeroToHundredSec} s`},
+    {label: t("drivetrain"), value: (variant: CarVariant) => variant.specs.drivetrain},
+    {label: t("dcCharging"), value: (variant: CarVariant) => `${variant.charging.dcMaxKw} kW · 10-80% ${variant.charging.dcTenToEightyMin} min`},
+    {label: t("acCharging"), value: (variant: CarVariant) => `${variant.charging.acMaxKw} kW · ${variant.charging.acChargeTimeH} h`}
+  ];
+
+  return (
+    <Card className="overflow-hidden">
+      <div className="overflow-x-auto">
+      <Table className="min-w-[760px]">
+        <TableHeader>
+          <TableRow className="bg-muted/60 hover:bg-muted/60">
+            <TableHead className="w-44">{t("variant")}</TableHead>
+            {variants.map((variant) => (
+              <TableHead key={variant.id}>
+                {localize(variant.name, locale)}
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {rows.map((row) => (
+            <TableRow key={row.label}>
+              <TableCell className="font-medium text-muted-foreground">{row.label}</TableCell>
+              {variants.map((variant) => (
+                <TableCell key={variant.id} className="font-semibold">
+                  {row.value(variant)}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      </div>
+    </Card>
   );
 }
 
@@ -63,7 +116,9 @@ function SpecTable({car, locale}: {car: CarWithBrand; locale: Locale}) {
   const t = useTranslations("car");
   const specs = car.specs;
   return (
-    <dl className="rounded-lg border border-border bg-white px-4">
+    <Card>
+      <CardContent className="px-4 py-0">
+    <dl>
       <Row label={t("range")} value={`${formatNumber(specs.rangeKm, locale)} km`} />
       <Row label={t("battery")} value={`${specs.batteryKwh} kWh`} />
       <Row label={t("power")} value={`${specs.motorKw} kW`} />
@@ -91,6 +146,8 @@ function SpecTable({car, locale}: {car: CarWithBrand; locale: Locale}) {
         }
       />
     </dl>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -98,13 +155,17 @@ function ChargingTable({car}: {car: CarWithBrand}) {
   const t = useTranslations("car");
   const charging = car.charging;
   return (
-    <dl className="rounded-lg border border-border bg-white px-4">
+    <Card>
+      <CardContent className="px-4 py-0">
+    <dl>
       <Row label={t("acCharging")} value={`${charging.acMaxKw} kW · ${charging.acChargeTimeH} h`} />
       <Row label={t("dcCharging")} value={`${charging.dcMaxKw} kW · 10-80% ${charging.dcTenToEightyMin} min`} />
       <Row label={t("connector")} value={charging.connectorTypes.join(", ")} />
       <Row label={t("v2l")} value={charging.v2lSupport ? "Yes" : "No"} />
       <Row label={t("homeCharger")} value={charging.homeChargerRequired ? "Required" : "Optional"} />
     </dl>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -112,7 +173,8 @@ function PricingTimeline({car, locale}: {car: CarWithBrand; locale: Locale}) {
   return (
     <div className="space-y-3">
       {car.pricingPeriods.map((period) => (
-        <article key={`${period.startDate}-${period.priceThb}`} className="rounded-lg border border-border bg-white p-4">
+        <Card key={`${period.startDate}-${period.priceThb}`}>
+          <CardContent className="p-4">
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-start">
             <div>
               <h3 className="font-semibold">{localize(period.label, locale)}</h3>
@@ -126,7 +188,8 @@ function PricingTimeline({car, locale}: {car: CarWithBrand; locale: Locale}) {
               {period.discountThb > 0 ? <p className="text-sm text-green-700">-{formatThb(period.discountThb, locale)}</p> : null}
             </div>
           </div>
-        </article>
+          </CardContent>
+        </Card>
       ))}
     </div>
   );
@@ -134,16 +197,18 @@ function PricingTimeline({car, locale}: {car: CarWithBrand; locale: Locale}) {
 
 function CarFAQ({items, locale}: {items: FAQItem[]; locale: Locale}) {
   if (items.length === 0) {
-    return <p className="rounded-lg border border-border bg-white p-4 text-sm text-muted-foreground">No model-specific FAQ yet.</p>;
+    return <Card><CardContent className="p-4 text-sm text-muted-foreground">No model-specific FAQ yet.</CardContent></Card>;
   }
 
   return (
     <div className="space-y-3">
       {items.map((item) => (
-        <article key={item.id} className="rounded-lg border border-border bg-white p-4">
+        <Card key={item.id}>
+          <CardContent className="p-4">
           <h3 className="font-semibold">{localize(item.question, locale)}</h3>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">{localize(item.answer, locale)}</p>
-        </article>
+          </CardContent>
+        </Card>
       ))}
     </div>
   );

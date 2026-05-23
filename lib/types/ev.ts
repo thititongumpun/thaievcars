@@ -67,6 +67,14 @@ export type PricingPeriod = {
   notes: LocalizedString;
 };
 
+export type CarVariant = {
+  id: string;
+  name: LocalizedString;
+  specs: CarSpecs;
+  charging: Charging;
+  pricingPeriods: PricingPeriod[];
+};
+
 export type CarModel = {
   id: string;
   name: LocalizedString;
@@ -83,6 +91,7 @@ export type CarModel = {
   charging: Charging;
   wheelsExterior: WheelsExterior;
   pricingPeriods: PricingPeriod[];
+  variants?: CarVariant[];
   sourceUrls: string[];
   officialPriceUrl: string;
   sourceConfidence: SourceConfidence;

@@ -29,6 +29,9 @@
     "relatedCars": "Related cars from this brand"
   },
   "car": {
+    "variants": "Variants",
+    "variant": "Variant",
+    "currentPrice": "Current price",
     "specs": "Specs",
     "charging": "Charging",
     "pricing": "Pricing",

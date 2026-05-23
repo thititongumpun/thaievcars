@@ -25,6 +25,7 @@ export function normalizeCar(car: CarWithBrand): CarWithBrand {
     lastUpdatedBy: car.lastUpdatedBy || "Sanity",
     warranty: car.warranty || {vehicleYears: 0, vehicleKm: 0, batteryYears: 0, batteryKm: 0},
     pricingPeriods: car.pricingPeriods || [],
+    variants: car.variants || [],
     charging: car.charging || {
       acMaxKw: 0,
       acChargeTimeH: 0,

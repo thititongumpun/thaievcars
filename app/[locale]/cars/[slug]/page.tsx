@@ -5,11 +5,13 @@ import {setRequestLocale, getTranslations} from "next-intl/server";
 import type {Metadata} from "next";
 import type {Locale} from "@/i18n/routing";
 import {Badge} from "@/components/ui/badge";
+import {Alert} from "@/components/ui/alert";
+import {Card, CardContent} from "@/components/ui/card";
 import {CarCard} from "@/components/car/car-card";
 import {CarTabs} from "@/components/car/car-tabs";
 import {TrustBadge} from "@/components/car/trust-badge";
 import {Car360Viewer} from "@/components/car/car-360-viewer";
-import {formatThb, getCurrentPricing, getPreviousPricing, localize} from "@/lib/format";
+import {formatThb, getCurrentPricing, getPreviousPricing, getStartingPrice, localize} from "@/lib/format";
 import {getFAQItemsForModel, getModelBySlug, getModels, getRelatedModels} from "@/lib/data/models";
 import {buildMetadata} from "@/lib/seo";
 
@@ -32,8 +34,8 @@ export async function generateMetadata({params}: {params: Promise<{locale: Local
     });
   }
 
-  const currentPrice = getCurrentPricing(car.pricingPeriods);
-  const priceText = currentPrice ? ` ${formatThb(currentPrice.priceThb, locale)}` : "";
+  const startingPrice = getStartingPrice(car);
+  const priceText = startingPrice ? ` ${formatThb(startingPrice, locale)}` : "";
   const title = `${localize(car.brand.name, locale)} ${localize(car.name, locale)}`;
   const description =
     locale === "th"
@@ -58,6 +60,7 @@ export default async function CarDetailPage({params}: {params: Promise<{locale: 
   if (!car) notFound();
 
   const currentPrice = getCurrentPricing(car.pricingPeriods);
+  const startingPrice = getStartingPrice(car);
   const previousPrice = getPreviousPricing(car.pricingPeriods);
   const relatedCars = await getRelatedModels(car.slug);
   const faqItems = await getFAQItemsForModel(car.id);
@@ -88,16 +91,18 @@ export default async function CarDetailPage({params}: {params: Promise<{locale: 
           </div>
           <h1 className="text-3xl font-bold sm:text-4xl">{localize(car.name, locale)}</h1>
           <p className="mt-4 leading-7 text-muted-foreground">{localize(car.shortDescription, locale)}</p>
-          <div className="mt-6 rounded-lg border border-border bg-white p-5">
+          <Card className="mt-6">
+            <CardContent className="p-5">
             <p className="text-sm text-muted-foreground">{t("currentPrice")}</p>
-            <p className="mt-1 text-3xl font-bold">{currentPrice ? formatThb(currentPrice.priceThb, locale) : "-"}</p>
+            <p className="mt-1 text-3xl font-bold">{startingPrice ? formatThb(startingPrice, locale) : "-"}</p>
             {previousPrice && currentPrice && previousPrice.priceThb > currentPrice.priceThb ? (
               <p className="mt-2 text-sm text-muted-foreground">
                 <span className="line-through">{formatThb(previousPrice.priceThb, locale)}</span>
                 <span className="ml-2 text-green-700">{t("discount")} {formatThb(previousPrice.priceThb - currentPrice.priceThb, locale)}</span>
               </p>
             ) : null}
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
@@ -106,7 +111,8 @@ export default async function CarDetailPage({params}: {params: Promise<{locale: 
       <CarTabs car={car} locale={locale} faqItems={faqItems} />
 
       <section className="mt-8 grid gap-4 md:grid-cols-2">
-        <div className="rounded-lg border border-border bg-white p-5">
+        <Card>
+          <CardContent className="p-5">
           <h2 className="text-lg font-bold">Warranty</h2>
           <dl className="mt-3 grid gap-3 text-sm">
             <div className="flex justify-between gap-4 border-b border-border pb-3">
@@ -118,21 +124,24 @@ export default async function CarDetailPage({params}: {params: Promise<{locale: 
               <dd className="font-semibold">{car.warranty.batteryYears} years / {car.warranty.batteryKm.toLocaleString()} km</dd>
             </div>
           </dl>
-        </div>
-        <div className="rounded-lg border border-border bg-white p-5">
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-5">
           <h2 className="text-lg font-bold">Data status</h2>
           <div className="mt-3 flex flex-wrap gap-2">
             <TrustBadge confidence={car.sourceConfidence} />
             <Badge>{car.bodyType}</Badge>
           </div>
           <p className="mt-3 text-sm text-muted-foreground">Updated by: {car.lastUpdatedBy}</p>
-        </div>
+          </CardContent>
+        </Card>
       </section>
 
-      <section className="mt-8 rounded-lg border border-amber-200 bg-amber-50 p-5">
+      <Alert className="mt-8 border-amber-200 bg-amber-50 p-5 text-amber-950">
         <h2 className="text-lg font-bold">{carT("sources")}</h2>
-        <p className="mt-2 text-sm leading-6 text-amber-950">{carT("verifyBeforeBuying")}</p>
-        <p className="mt-3 text-sm font-medium text-amber-950">
+        <p className="mt-2 text-sm leading-6">{carT("verifyBeforeBuying")}</p>
+        <p className="mt-3 text-sm font-medium">
           {carT("lastVerified")}: {car.lastVerifiedAt}
         </p>
         <div className="mt-4 flex flex-wrap gap-3">
@@ -155,7 +164,7 @@ export default async function CarDetailPage({params}: {params: Promise<{locale: 
             {carT("suggestUpdate")}
           </a>
         </div>
-      </section>
+      </Alert>
 
       {relatedCars.length > 0 ? (
         <section className="mt-12">

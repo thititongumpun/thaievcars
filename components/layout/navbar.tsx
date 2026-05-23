@@ -14,10 +14,10 @@ export async function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-border bg-card/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <Link href="/" className="flex min-w-0 items-center gap-2 font-bold">
-          <span className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground">
+          <span className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-subtle">
             <CarFront className="h-5 w-5" aria-hidden="true" />
           </span>
           <span className="truncate">ThaiEVCars</span>

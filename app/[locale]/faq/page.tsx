@@ -2,6 +2,7 @@ import {getTranslations, setRequestLocale} from "next-intl/server";
 import type {Metadata} from "next";
 import type {Locale} from "@/i18n/routing";
 import {Link} from "@/i18n/navigation";
+import {Card, CardContent} from "@/components/ui/card";
 import {getFAQCategories, getFAQItems} from "@/lib/data/faq";
 import {getModels} from "@/lib/data/models";
 import {localize} from "@/lib/format";
@@ -41,7 +42,8 @@ export default async function FAQPage({params}: {params: Promise<{locale: Locale
                 {categoryItems.map((item) => {
                   const relatedCar = item.relatedCarId ? models.find((model) => model.id === item.relatedCarId) : undefined;
                   return (
-                    <article key={item.id} className="rounded-lg border border-border bg-white p-5">
+                    <Card key={item.id}>
+                      <CardContent className="p-5">
                       <h3 className="font-semibold">{localize(item.question, locale)}</h3>
                       <p className="mt-2 leading-7 text-muted-foreground">{localize(item.answer, locale)}</p>
                       {relatedCar ? (
@@ -49,7 +51,8 @@ export default async function FAQPage({params}: {params: Promise<{locale: Locale
                           {localize(relatedCar.name, locale)}
                         </Link>
                       ) : null}
-                    </article>
+                      </CardContent>
+                    </Card>
                   );
                 })}
               </div>
